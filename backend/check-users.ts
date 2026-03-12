@@ -1,0 +1,17 @@
+import prisma from './src/config/prisma';
+
+async function main() {
+    const users = await prisma.user.findMany();
+    console.log('--- USERS IN DATABASE ---');
+    console.log(JSON.stringify(users, null, 2));
+    console.log('-------------------------');
+}
+
+main()
+    .catch((e) => {
+        console.error(e);
+        process.exit(1);
+    })
+    .finally(async () => {
+        await prisma.$disconnect();
+    });

@@ -1,0 +1,61 @@
+﻿generator client {
+  provider = "prisma-client-js"
+  output   = "../../backend/src/generated/client"
+}
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://promptforge:promptforge123@localhost:5432/promptforge_db"
+}
+model User {
+  id         String     @id @default(cuid())
+  username   String     @unique
+  email      String     @unique
+  reputation Int        @default(0)
+  createdAt  DateTime   @default(now())
+  prompts    Prompt[]
+  votes      Vote[]
+  bookmarks  Bookmark[]
+}
+model Prompt {
+  id             String    @id @default(cuid())
+  title          String
+  description    String
+  promptContent  String
+  category       String
+  aiModel        String
+  tags           String[]
+  score          Int       @default(0)
+  safetyStatus   String    @default("approved")
+  createdAt      DateTime  @default(now())
+  authorId  String
+  author    User            @relation(fields: [authorId], references: [id])
+  parentPromptId String?
+  parentPrompt   Prompt?  @relation("PromptLineage", fields: [parentPromptId], references: [id])
+  forkedPrompts  Prompt[] @relation("PromptLineage")
+  versions  PromptVersion[]
+  votes     Vote[]
+  bookmarks Bookmark[]
+}
+model PromptVersion {
+  id            String   @id @default(cuid())
+  versionNumber Int
+  promptContent String
+  createdAt     DateTime @default(now())
+  promptId String
+  prompt   Prompt @relation(fields: [promptId], references: [id])
+}
+model Vote {
+  id       String @id @default(cuid())
+  voteType String
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  promptId String
+  prompt   Prompt @relation(fields: [promptId], references: [id])
+}
+model Bookmark {
+  id String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  promptId String
+  prompt   Prompt @relation(fields: [promptId], references: [id])
+}

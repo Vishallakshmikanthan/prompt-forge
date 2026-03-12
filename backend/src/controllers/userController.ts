@@ -1,0 +1,183 @@
+import { Request, Response, NextFunction } from 'express';
+import * as userService from '../services/userService';
+import { AppError } from '../middleware/errorHandler';
+
+export const getUserProfile = async (
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { username } = req.params;
+        const profile = await userService.getUserProfile(username);
+        res.status(200).json({ status: 'success', data: profile });
+    } catch (error: any) {
+        if (error.message === 'User not found') {
+            error.statusCode = 404;
+        }
+        next(error);
+    }
+};
+
+export const getUserPrompts = async (
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { username } = req.params;
+        const prompts = await userService.getUserPrompts(username);
+        res.status(200).json({ status: 'success', data: prompts });
+    } catch (error: any) {
+        if (error.message === 'User not found') {
+            error.statusCode = 404;
+        }
+        next(error);
+    }
+};
+
+export const getUserForks = async (
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { username } = req.params;
+        const forks = await userService.getUserForks(username);
+        res.status(200).json({ status: 'success', data: forks });
+    } catch (error: any) {
+        if (error.message === 'User not found') {
+            error.statusCode = 404;
+        }
+        next(error);
+    }
+};
+
+export const getUserBookmarks = async (
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { username } = req.params;
+        const bookmarks = await userService.getUserBookmarks(username);
+        res.status(200).json({ status: 'success', data: bookmarks });
+    } catch (error: any) {
+        if (error.message === 'User not found') {
+            error.statusCode = 404;
+        }
+        next(error);
+    }
+};
+
+export const getLeaderboard = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+        const users = await userService.getLeaderboard(limit);
+        res.status(200).json({ status: 'success', data: users });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateProfile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            res.status(401).json({ status: 'fail', message: 'Unauthorized' });
+            return;
+        }
+
+        const data = await userService.updateProfile(userId, req.body);
+        res.status(200).json({ status: 'success', data });
+    } catch (error: any) {
+        if (error.message === 'Username is already taken') {
+            error.statusCode = 409;
+        }
+        next(error);
+    }
+};
+
+export const getActivityGraph = async (
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { username } = req.params;
+        const data = await userService.getActivityGraph(username);
+        res.status(200).json({ status: 'success', data });
+    } catch (error: any) {
+        if (error.message === 'User not found') error.statusCode = 404;
+        next(error);
+    }
+};
+
+export const getAnalytics = async (
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { username } = req.params;
+        const data = await userService.getAnalytics(username);
+        res.status(200).json({ status: 'success', data });
+    } catch (error: any) {
+        if (error.message === 'User not found') error.statusCode = 404;
+        next(error);
+    }
+};
+
+export const getFeaturedPrompt = async (
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { username } = req.params;
+        const data = await userService.getFeaturedPrompt(username);
+        res.status(200).json({ status: 'success', data });
+    } catch (error: any) {
+        if (error.message === 'User not found') error.statusCode = 404;
+        next(error);
+    }
+};
+
+export const getCollections = async (
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { username } = req.params;
+        const data = await userService.getCollections(username);
+        res.status(200).json({ status: 'success', data });
+    } catch (error: any) {
+        if (error.message === 'User not found') error.statusCode = 404;
+        next(error);
+    }
+};
+
+export const getActivityTimeline = async (
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { username } = req.params;
+        const data = await userService.getActivityTimeline(username);
+        res.status(200).json({ status: 'success', data });
+    } catch (error: any) {
+        if (error.message === 'User not found') error.statusCode = 404;
+        next(error);
+    }
+};
+

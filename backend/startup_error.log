@@ -1,0 +1,91 @@
+﻿node.exe : C:\Users\vis
+ha\Downloads\prompt-boo
+k\backend\node_modules\
+ts-node\src\index.ts:85
+9
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : 
+NotSpecified: (C:\    
+Users\visha\...rc\inde 
+   x.ts:859:String) 
+[], R    emoteException
+    + 
+FullyQualifiedErrorI   
+ d : NativeCommandError
+ 
+    return new TSError(
+diagnosticText, 
+diagnosticCodes, 
+diagnostics);
+           ^
+TSError: Γ¿» Unable to 
+compile TypeScript:
+src/services/promptServ
+ice.ts(93,39): error 
+TS7006: Parameter 'tx' 
+implicitly has an 
+'any' type.
+src/services/promptServ
+ice.ts(134,39): error 
+TS7006: Parameter 'tx' 
+implicitly has an 
+'any' type.
+
+    at createTSError (C
+:\Users\visha\Downloads
+\prompt-book\backend\no
+de_modules\ts-node\src\
+index.ts:859:12)
+    at reportTSError (C
+:\Users\visha\Downloads
+\prompt-book\backend\no
+de_modules\ts-node\src\
+index.ts:863:19)
+    at getOutput (C:\Us
+ers\visha\Downloads\pro
+mpt-book\backend\node_m
+odules\ts-node\src\inde
+x.ts:1077:36)
+    at Object.compile (
+C:\Users\visha\Download
+s\prompt-book\backend\n
+ode_modules\ts-node\src
+\index.ts:1433:41)
+    at 
+Module.m._compile (C:\U
+sers\visha\Downloads\pr
+ompt-book\backend\node_
+modules\ts-node\src\ind
+ex.ts:1617:30)
+    at node:internal/mo
+dules/cjs/loader:1839:1
+0
+    at Object.require.e
+xtensions.<computed> 
+[as .ts] (C:\Users\vish
+a\Downloads\prompt-book
+\backend\node_modules\t
+s-node\src\index.ts:162
+1:12)
+    at Module.load (nod
+e:internal/modules/cjs/
+loader:1441:32)
+    at Function._load (
+node:internal/modules/c
+js/loader:1263:12)
+    at TracingChannel.t
+raceSync (node:diagnost
+ics_channel:322:14) {
+  diagnosticCodes: [ 
+7006, 7006 ]
+}
