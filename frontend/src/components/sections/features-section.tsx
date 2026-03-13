@@ -2,42 +2,49 @@
 
 import { Sparkles, History, Users, Code2, Cpu, Zap } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const features = [
     {
         title: "Version Control Built-in",
         description: "Track changes, fork variations, and collaborate on prompts.",
         icon: History,
+        learnMoreHref: "/documentation/templates",
         className: "md:col-span-2 md:row-span-2 bg-gradient-to-br from-background to-muted/50",
     },
     {
         title: "Community Driven",
         description: "Access curated prompts from top AI engineers.",
         icon: Users,
+        learnMoreHref: "/community",
         className: "md:col-span-1 md:row-span-1 bg-background",
     },
     {
-        title: "Multi-Model Support",
+        title: "Discover Proven Prompts",
         description: "Optimized for OpenAI, Anthropic, Gemini, and local models.",
         icon: Cpu,
+        learnMoreHref: "/documentation/prompts",
         className: "md:col-span-1 md:row-span-1 bg-background",
     },
     {
-        title: "Structured Output",
+        title: "Structured Design",
         description: "Enforce JSON schema directly in the prompt UI.",
         icon: Code2,
+        learnMoreHref: "/documentation/templates",
         className: "md:col-span-1 md:row-span-2 bg-gradient-to-tr from-accent/10 to-background",
     },
     {
         title: "Instant Execution",
         description: "Test run prompts immediately with your API keys.",
         icon: Zap,
+        learnMoreHref: "/documentation/prompts",
         className: "md:col-span-2 md:row-span-1 bg-background",
     },
     {
         title: "Smart Suggestions",
         description: "AI-assisted prompt optimization for effective instructions.",
         icon: Sparkles,
+        learnMoreHref: "/documentation/prompts",
         className: "md:col-span-1 md:row-span-1 bg-background",
     },
 ];
@@ -79,9 +86,15 @@ export function FeaturesSection() {
                                 </div>
                                 <div>
                                     <h3 className="text-xl md:text-2xl font-semibold mb-2 font-display tracking-tight group-hover:text-accent transition-colors">{feature.title}</h3>
-                                    <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                                    <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-3">
                                         {feature.description}
                                     </p>
+                                    <Link
+                                        href={feature.learnMoreHref}
+                                        className="text-xs font-semibold text-accent/70 hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
+                                    >
+                                        Learn more →
+                                    </Link>
                                 </div>
                             </div>
                         </motion.div>

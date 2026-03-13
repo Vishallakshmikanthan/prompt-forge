@@ -8,8 +8,8 @@ import { AppError } from './errorHandler';
  * Logs authentication failures for security auditing.
  */
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-    // Check for userId in body, authorId (common in createPrompt), or Authorization header
-    const userId = req.body?.userId || req.body?.authorId || req.headers['authorization'];
+    // Check for userId in body, authorId, Authorization header, or user-id header
+    const userId = req.body?.userId || req.body?.authorId || req.headers['authorization'] || req.headers['user-id'];
 
     if (!userId) {
         console.error('--- AUTHENTICATION FAILURE START ---');

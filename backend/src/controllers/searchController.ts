@@ -15,42 +15,35 @@ export const semanticSearch = async (req: Request, res: Response, next: NextFunc
             return;
         }
 
-        // 1. Generate embedding for the search query
-        const queryEmbedding = await generateEmbedding(query);
-
-        // 2. Fetch all prompts that have embeddings
-        // In a large production app, we would use pgvector and index-base search in the DB
         const prompts = await prisma.prompt.findMany({
             where: {
-                embedding: {
-                    isEmpty: false
-                }
+                moderationStatus: 'approved',
+                OR: [
+                    { title: { contains: query, mode: 'insensitive' } },
+                    { description: { contains: query, mode: 'insensitive' } },
+                    { category: { contains: query, mode: 'insensitive' } },
+                    { tags: { has: query } } // Note: array search might need adjustment depending on DB
+                ]
             },
             include: {
                 author: {
                     select: { id: true, username: true, avatarUrl: true }
+                },
+                analytics: true,
+                _count: {
+                    select: {
+                        votes: true,
+                        forkedPrompts: true,
+                        bookmarks: true
+                    }
                 }
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         });
 
-        // 3. Compute similarities and rank
-        const scoredResults = prompts.map(prompt => {
-            const similarity = cosineSimilarity(queryEmbedding, prompt.embedding as number[]);
-            return {
-                ...prompt,
-                similarity
-            };
-        });
-
-        // 4. Sort by similarity and return top matches
-        // We filter by a minimum similarity threshold to ensure quality
-        const THRESHOLD = 0.5;
-        const results = scoredResults
-            .filter(p => p.similarity >= THRESHOLD)
-            .sort((a, b) => b.similarity - a.similarity)
-            .slice(0, 20); // Return top 20
-
-        res.status(200).json({ status: 'success', data: results });
+        res.status(200).json({ status: 'success', data: prompts });
         return;
     } catch (error) {
         next(error);

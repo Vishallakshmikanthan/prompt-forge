@@ -1,0 +1,73 @@
+﻿node.exe : ΓÜá Warning: Next.js 
+inferred your workspace root, but 
+it may not be correct.
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~
+    + CategoryInfo          : NotS 
+   pecified: (ΓÜá Warning: Ne...n  
+  ot be correct.:String) [], Rem   
+ oteException
+    + FullyQualifiedErrorId : Nati 
+   veCommandError
+ 
+ We detected multiple lockfiles 
+and selected the directory of 
+C:\Users\visha\package-lock.json 
+as the root directory.
+ To silence this warning, set 
+`turbopack.root` in your Next.js 
+config, or consider removing one 
+of the lockfiles if it's not 
+needed.
+   See https://nextjs.org/docs/app/
+api-reference/config/next-config-js
+/turbopack#root-directory for more 
+information.
+ Detected additional lockfiles: 
+   * C:\Users\visha\Downloads\promp
+t-book\frontend\package-lock.json
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  ┬╖ clientTraceMetadata
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 11.6s
+  Running next.config.js provided runAfterProductionCompile ...
+Γ£ô Completed runAfterProductionCompile in 493ms
+  Running TypeScript ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/14) ...
+  Generating static pages using 11 workers (3/14) 
+  Generating static pages using 11 workers (6/14) 
+  Generating static pages using 11 workers (10/14) 
+Γ£ô Generating static pages using 11 workers (14/14) in 913.3ms
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ Γùï /api-reference
+Γö£ Γùï /bookmarks
+Γö£ Γùï /categories
+Γö£ ╞Æ /categories/[category]
+Γö£ Γùï /community
+Γö£ Γùï /docs
+Γö£ Γùï /explore
+Γö£ Γùï /leaderboard
+Γö£ Γùï /profile
+Γö£ ╞Æ /prompt/[id]
+Γö£ Γùï /search
+Γö£ Γùï /upload
+Γöö ╞Æ /user/[username]
+
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+

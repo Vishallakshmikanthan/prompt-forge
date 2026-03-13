@@ -13,6 +13,9 @@ import searchRoutes from './routes/searchRoutes';
 import notificationRoutes from './routes/notificationRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
 import recommendationRoutes from './routes/recommendationRoutes';
+import discussionRoutes from './routes/discussionRoutes';
+import statsRoutes from './routes/statsRoutes';
+import profileRoutes from './routes/profileRoutes';
 import securityHeaders from './middleware/securityHeaders';
 import { apiRateLimiter } from './middleware/rateLimiter';
 import errorHandler from './middleware/errorHandler';
@@ -81,8 +84,11 @@ app.use('/api/auth', require('./routes/authRoutes').default);
 app.use('/api/bookmarks', bookmarkRoutes); // Updated prefix for clarity
 app.use('/api/notifications', notificationRoutes); // Updated prefix for clarity
 app.use('/api/users', userRoutes);
+app.use('/api/profile', profileRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/discussions', discussionRoutes);
 app.use('/api/recommendations', recommendationRoutes); // For trending/personalized without 'prompts' prefix
+app.use('/api/stats', statsRoutes);
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────
 // Sentry error handler must be before any other error middleware and after all controllers

@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { Search, Layout, Users } from "lucide-react";
+import Link from "next/link";
 import { SpiralAnimation } from "@/components/ui/spiral-animation";
 import {
     motion,
@@ -151,13 +152,13 @@ export function Features() {
                         <p className="text-zinc-400 mb-8 leading-relaxed text-base relative z-10">
                             Browse curated prompts used by developers to build real-world AI applications.
                         </p>
-                        <div className="flex items-center justify-center gap-2 text-sm font-bold text-zinc-500 group-hover:text-cyan-400 transition-colors cursor-pointer relative z-10 group/link">
+                        <Link href="/documentation/discover-prompts" className="flex items-center justify-center gap-2 text-sm font-bold text-zinc-500 group-hover:text-cyan-400 transition-colors cursor-pointer relative z-10 group/link">
                             Learn More
                             <motion.span
                                 animate={{ x: [0, 6, 0] }}
                                 transition={{ duration: 1.5, repeat: Infinity }}
                             >→</motion.span>
-                        </div>
+                        </Link>
                     </motion.div>
 
                     {/* Card 2 */}
@@ -178,13 +179,13 @@ export function Features() {
                         <p className="text-zinc-400 mb-8 leading-relaxed text-base relative z-10">
                             Every prompt follows a structured format ensuring complete reproducibility.
                         </p>
-                        <div className="flex items-center justify-center gap-2 text-sm font-bold text-zinc-500 group-hover:text-purple-400 transition-colors cursor-pointer relative z-10 group/link">
+                        <Link href="/documentation/structured-design" className="flex items-center justify-center gap-2 text-sm font-bold text-zinc-500 group-hover:text-purple-400 transition-colors cursor-pointer relative z-10 group/link">
                             Learn More
                             <motion.span
                                 animate={{ x: [0, 6, 0] }}
                                 transition={{ duration: 1.5, repeat: Infinity }}
                             >→</motion.span>
-                        </div>
+                        </Link>
                     </motion.div>
 
                     {/* Card 3 */}
@@ -205,13 +206,13 @@ export function Features() {
                         <p className="text-zinc-400 mb-8 leading-relaxed text-base relative z-10">
                             Learn from prompts shared by developers, researchers, and AI builders.
                         </p>
-                        <div className="flex items-center justify-center gap-2 text-sm font-bold text-zinc-500 group-hover:text-indigo-400 transition-colors cursor-pointer relative z-10 group/link">
+                        <Link href="/community" className="flex items-center justify-center gap-2 text-sm font-bold text-zinc-500 group-hover:text-indigo-400 transition-colors cursor-pointer relative z-10 group/link">
                             Learn More
                             <motion.span
                                 animate={{ x: [0, 6, 0] }}
                                 transition={{ duration: 1.5, repeat: Infinity }}
                             >→</motion.span>
-                        </div>
+                        </Link>
                     </motion.div>
 
                 </div>

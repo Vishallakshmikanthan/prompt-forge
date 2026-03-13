@@ -1,8 +1,13 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/components/auth/auth-provider";
 
 export function CtaSection() {
+    const { user } = useAuth();
+
     return (
         <section className="py-24 relative overflow-hidden">
             {/* Background styling */}
@@ -11,7 +16,7 @@ export function CtaSection() {
 
             <div className="container relative z-10 mx-auto px-4 text-center">
                 <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
-                    Ready to level up your AI workflows?
+                    Start Exploring Developer Prompts
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
                     Join thousands of developers using PromptForge to manage, version, and share their best prompts.
@@ -24,9 +29,11 @@ export function CtaSection() {
                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </Link>
-                    <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-semibold rounded-full bg-background">
-                        Sign Up for Free
-                    </Button>
+                    <Link href={user ? "/upload" : "/login"}>
+                        <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-semibold rounded-full bg-background hover:bg-muted transition-colors">
+                            Upload Prompt
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </section>

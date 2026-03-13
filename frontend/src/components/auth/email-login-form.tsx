@@ -34,7 +34,7 @@ export function EmailLoginForm() {
             const endpoint = isLogin ? "/auth/login" : "/auth/register";
             const payload = isLogin ? { email, password } : { email, password, username };
 
-            const response = await fetchApi(endpoint, {
+            const response: any = await fetchApi(endpoint, {
                 method: "POST",
                 body: JSON.stringify(payload),
             });

@@ -4,8 +4,23 @@ import { SplineScene } from "@/components/ui/splite"
 import { Spotlight } from "@/components/ui/spotlight"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
+import { useAuth } from "@/components/auth/auth-provider"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export function SplineHero() {
+    const { user } = useAuth()
+    const router = useRouter()
+
+    const handleUploadClick = () => {
+        if (!user) {
+            alert("Please login to upload prompts")
+            router.push("/login")
+        } else {
+            router.push("/upload")
+        }
+    }
+
     return (
         <section className="relative min-h-[800px] w-full flex items-center bg-zinc-950 overflow-hidden py-20">
 
@@ -44,16 +59,19 @@ export function SplineHero() {
                             transition={{ duration: 0.6, delay: 0.2 }}
                             className="flex gap-4 flex-wrap"
                         >
-                            <Button size="lg" className="bg-cyan-600 hover:bg-cyan-500 text-white px-8">
-                                Explore Prompts
-                            </Button>
+                            <Link href="/categories">
+                                <Button size="lg" className="bg-cyan-600 hover:bg-cyan-500 text-white px-8">
+                                    Browse Categories
+                                </Button>
+                            </Link>
 
                             <Button
                                 size="lg"
                                 variant="outline"
                                 className="border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+                                onClick={handleUploadClick}
                             >
-                                Documentation
+                                Upload Prompt
                             </Button>
                         </motion.div>
 

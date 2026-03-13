@@ -17,7 +17,7 @@ export const getUserProfile = async (identifier: string) => {
             avatarUrl: true,
             githubUrl: true,
             website: true,
-            createdAt: true,
+            created_at: true,
             _count: {
                 select: {
                     prompts: true,
@@ -28,7 +28,7 @@ export const getUserProfile = async (identifier: string) => {
     });
 
     if (!user) {
-        throw new Error('User not found');
+        return null;
     }
 
     // Count prompts where this user is the author and it's a root prompt (original) vs a fork
@@ -59,8 +59,10 @@ export const getUserProfile = async (identifier: string) => {
         (totalLikes * 5) + (totalForks * 10) + (totalViews * 0.2)
     );
 
+    const { created_at, ...userWithoutCreatedAt } = user;
     return {
-        ...user,
+        ...userWithoutCreatedAt,
+        createdAt: created_at,
         reputation: computedReputation || user.reputation,
         stats: {
             promptsCreated,
@@ -82,7 +84,7 @@ export const getUserPrompts = async (identifier: string) => {
             ]
         }
     });
-    if (!user) throw new Error('User not found');
+    if (!user) return [];
 
     return prisma.prompt.findMany({
         where: {
@@ -110,7 +112,7 @@ export const getUserForks = async (identifier: string) => {
             ]
         }
     });
-    if (!user) throw new Error('User not found');
+    if (!user) return [];
 
     return prisma.prompt.findMany({
         where: {
@@ -141,7 +143,7 @@ export const getUserBookmarks = async (identifier: string) => {
             ]
         }
     });
-    if (!user) throw new Error('User not found');
+    if (!user) return [];
 
     const bookmarks = await prisma.bookmark.findMany({
         where: { userId: user.id },
@@ -223,7 +225,7 @@ export const updateProfile = async (
         }
     }
 
-    return prisma.user.update({
+    const updated = await prisma.user.update({
         where: { id: userId },
         data,
         select: {
@@ -236,9 +238,15 @@ export const updateProfile = async (
             location: true,
             skills: true,
             avatarUrl: true,
-            createdAt: true,
+            created_at: true,
         }
     });
+
+    const { created_at, ...updatedWithoutCreatedAt } = updated;
+    return {
+        ...updatedWithoutCreatedAt,
+        createdAt: created_at,
+    };
 };
 
 // ─── Extended Profile Analytics ─────────────────────────────────────────────
@@ -250,7 +258,7 @@ export const getActivityGraph = async (identifier: string) => {
     const user = await prisma.user.findFirst({
         where: { OR: [{ username: identifier }, { id: identifier }] },
     });
-    if (!user) throw new Error('User not found');
+    if (!user) return { days: [], totalContributions: 0 };
 
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
@@ -266,7 +274,7 @@ export const getActivityGraph = async (identifier: string) => {
 
     // Group by date string
     const map: Record<string, number> = {};
-    prompts.forEach((p) => {
+    prompts.forEach((p: any) => {
         const day = p.createdAt.toISOString().slice(0, 10);
         map[day] = (map[day] || 0) + 1;
     });
@@ -292,7 +300,7 @@ export const getAnalytics = async (identifier: string) => {
     const user = await prisma.user.findFirst({
         where: { OR: [{ username: identifier }, { id: identifier }] },
     });
-    if (!user) throw new Error('User not found');
+    if (!user) return [];
 
     const promptsWithAnalytics = await prisma.prompt.findMany({
         where: { authorId: user.id },
@@ -307,7 +315,7 @@ export const getAnalytics = async (identifier: string) => {
 
     // Aggregate by month
     const months: Record<string, { views: number; usage: number; forks: number }> = {};
-    promptsWithAnalytics.forEach((p) => {
+    promptsWithAnalytics.forEach((p: any) => {
         const month = p.createdAt.toISOString().slice(0, 7); // YYYY-MM
         if (!months[month]) months[month] = { views: 0, usage: 0, forks: 0 };
         if (p.analytics) {
@@ -334,7 +342,7 @@ export const getFeaturedPrompt = async (identifier: string) => {
     const user = await prisma.user.findFirst({
         where: { OR: [{ username: identifier }, { id: identifier }] },
     });
-    if (!user) throw new Error('User not found');
+    if (!user) return null;
 
     const prompt = await prisma.prompt.findFirst({
         where: { authorId: user.id },
@@ -367,7 +375,7 @@ export const getCollections = async (identifier: string) => {
     const user = await prisma.user.findFirst({
         where: { OR: [{ username: identifier }, { id: identifier }] },
     });
-    if (!user) throw new Error('User not found');
+    if (!user) return [];
 
     const groups = await prisma.prompt.groupBy({
         by: ['category'],
@@ -376,7 +384,7 @@ export const getCollections = async (identifier: string) => {
         orderBy: { _count: { category: 'desc' } },
     });
 
-    return groups.map((g) => ({
+    return groups.map((g: any) => ({
         title: g.category,
         count: g._count._all,
     }));
@@ -389,7 +397,7 @@ export const getActivityTimeline = async (identifier: string) => {
     const user = await prisma.user.findFirst({
         where: { OR: [{ username: identifier }, { id: identifier }] },
     });
-    if (!user) throw new Error('User not found');
+    if (!user) return [];
 
     // Original prompts created
     const created = await prisma.prompt.findMany({
@@ -425,7 +433,7 @@ export const getActivityTimeline = async (identifier: string) => {
     // Combine and sort
     const events: { type: string; content: string; timestamp: string }[] = [];
 
-    created.forEach((p) => {
+    created.forEach((p: any) => {
         events.push({
             type: 'create',
             content: `Created prompt: ${p.title}`,
@@ -433,7 +441,7 @@ export const getActivityTimeline = async (identifier: string) => {
         });
     });
 
-    forked.forEach((p) => {
+    forked.forEach((p: any) => {
         events.push({
             type: 'fork',
             content: `Forked prompt: ${p.parentPrompt?.title || p.title}`,
@@ -441,7 +449,7 @@ export const getActivityTimeline = async (identifier: string) => {
         });
     });
 
-    votes.forEach((v) => {
+    votes.forEach((v: any) => {
         events.push({
             type: 'like',
             content: `${v.voteType === 'UP' ? 'Liked' : 'Voted on'} prompt: ${v.prompt.title}`,

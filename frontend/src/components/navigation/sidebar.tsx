@@ -24,7 +24,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         { name: "Community", href: "/community", icon: Users },
         {
             name: "Profile",
-            href: user ? `/user/${user.user_metadata?.username || user.id}` : "/profile",
+            href: "/profile",
             icon: User
         },
     ]
@@ -119,7 +119,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                         <div className="p-6 border-t border-border bg-muted/20">
                             {user ? (
                                 <Link
-                                    href={`/user/${user.user_metadata?.username || user.id}`}
+                                    href="/profile"
                                     onClick={onClose}
                                     className="flex items-center space-x-3 px-2 group cursor-pointer"
                                 >

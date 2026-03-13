@@ -19,8 +19,15 @@ export const discoveryService = {
     /**
      * Fetch newest prompts based on creation date.
      */
-    async getNewestPrompts(limit: number = 6): Promise<Prompt[]> {
+    async getNewestPrompts(limit: number = 12): Promise<Prompt[]> {
         return fetchApi<Prompt[]>(`/prompts/new?limit=${limit}`);
+    },
+
+    /**
+     * Fetch popular prompts based on likes/votes.
+     */
+    async getPopularPrompts(limit: number = 12): Promise<Prompt[]> {
+        return fetchApi<Prompt[]>(`/prompts/popular?limit=${limit}`);
     },
 
     /**

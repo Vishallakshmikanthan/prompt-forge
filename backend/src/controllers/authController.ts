@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as authService from '../services/authService';
 import bcrypt from 'bcrypt';
+import prisma from '../config/prisma';
 
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -11,16 +12,19 @@ export const register = async (req: Request, res: Response, next: NextFunction):
             return;
         }
 
-        if (password.length < 8 || !/\d/.test(password)) {
-            res.status(400).json({ status: 'fail', message: 'Password must be at least 8 characters and contain a number' });
+        if (password.length < 8) {
+            res.status(400).json({ status: 'fail', message: 'Password must be at least 8 characters' });
             return;
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
         const data = await authService.register(email, passwordHash, username);
-        res.status(201).json({ status: 'success', data });
+        res.status(201).json(data.user);
     } catch (error: any) {
-        error.statusCode = error.message.includes('exists') ? 409 : 500;
+        if (error.message.includes('exists')) {
+            res.status(400).json({ error: "User already exists" });
+            return;
+        }
         next(error);
     }
 };
@@ -30,27 +34,29 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         const { email, password } = req.body;
 
         if (!email || !password) {
-            res.status(400).json({ status: 'fail', message: 'Email and password are required' });
+            res.status(400).json({ error: "Email and password are required" });
             return;
         }
 
-        // We fetch user first to check password
-        import('../config/prisma').then(async ({ default: prisma }) => {
-            const user = await prisma.user.findUnique({ where: { email } });
-            if (!user || !user.passwordHash) {
-                res.status(401).json({ status: 'fail', message: 'Invalid email or password' });
-                return;
-            }
+        const user = await prisma.user.findUnique({ where: { email } });
+        
+        if (!user || !user.password_hash) {
+            res.status(401).json({ error: "Invalid credentials" });
+            return;
+        }
 
-            const valid = await bcrypt.compare(password, user.passwordHash);
-            if (!valid) {
-                res.status(401).json({ status: 'fail', message: 'Invalid email or password' });
-                return;
-            }
+        const valid = await bcrypt.compare(password, user.password_hash);
+        if (!valid) {
+            res.status(401).json({ error: "Invalid credentials" });
+            return;
+        }
 
-            const data = await authService.login(email, user.passwordHash);
-            res.status(200).json({ status: 'success', data });
-        }).catch(next);
+        const data = await authService.login(email, user.password_hash);
+        res.status(200).json({
+            message: "Login successful",
+            userId: user.id,
+            token: data.token // Keeping token for existing client logic if needed
+        });
     } catch (error) {
         next(error);
     }

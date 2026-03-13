@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-for-dev';
 
-export const register = async (email: string, passwordHash: string, username: string, authProvider: string = 'email') => {
+export const register = async (email: string, passwordHash: string, username: string, provider: string = 'email') => {
     // Generate dicebear identicon avatar
     const avatarUrl = `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`;
 
@@ -25,18 +25,18 @@ export const register = async (email: string, passwordHash: string, username: st
     const user = await prisma.user.create({
         data: {
             email,
-            passwordHash,
+            password_hash: passwordHash,
             username,
             avatarUrl,
-            authProvider,
+            provider,
             displayName: username
         }
     });
 
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '7d' });
 
-    // Exclude passwordHash from response
-    const { passwordHash: _hash, ...safeUser } = user;
+    // Exclude password_hash from response
+    const { password_hash: _hash, ...safeUser } = user;
     return { user: safeUser, token };
 };
 
@@ -49,11 +49,11 @@ export const login = async (email: string, passwordHash: string) => {
         throw new Error('Invalid email or password');
     }
 
-    if (user.authProvider !== 'email' || !user.passwordHash) {
+    if (user.provider !== 'email' || !user.password_hash) {
         throw new Error('Please login with your social provider');
     }
 
-    const { passwordHash: _hash, ...safeUser } = user;
+    const { password_hash: _hash, ...safeUser } = user;
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '7d' });
 
     return { user: safeUser, token };

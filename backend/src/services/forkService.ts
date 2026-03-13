@@ -42,8 +42,14 @@ export const createFork = async (userId: string, originalPromptId: string) => {
                 tags: original.tags,
                 authorId: userId,
                 parentPromptId: original.id,
-                score: 0,
-                moderationStatus: 'approved',
+            },
+        });
+
+        // 4. Record the fork event in the dedicated tracking table
+        await tx.promptFork.create({
+            data: {
+                promptId: original.id,
+                userId: userId,
             },
         });
 

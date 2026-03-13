@@ -1,0 +1,2 @@
+src/app/api-reference/page.tsx(268,45): error TS2322: Type 'string' is not assignable to type 'never'.
+src/app/api-reference/page.tsx(285,49): error TS2322: Type 'string' is not assignable to type 'never'.

@@ -2,7 +2,9 @@
  * Base API Configuration and generic fetch wrapper
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+const isServer = typeof window === 'undefined';
+const DEFAULT_URL = isServer ? "http://127.0.0.1:4000/api" : "/api";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || DEFAULT_URL;
 
 export class ApiError extends Error {
     constructor(public status: number, message: string) {
@@ -18,18 +20,28 @@ export async function fetchApi<T>(
     endpoint: string,
     options: RequestInit = {}
 ): Promise<T> {
-    const url = `${BASE_URL}${endpoint}`;
+    // Ensure endpoint start with /
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    // If we're using relative paths, we don't want to double up on /api
+    const url = cleanEndpoint.startsWith('/api') ? cleanEndpoint : `${BASE_URL}${cleanEndpoint}`;
 
     try {
         const response = await fetch(url, {
             ...options,
             headers: {
                 "Content-Type": "application/json",
-                ...options.headers,
+                ...(options?.headers || {}),
             },
         });
 
-        const data = await response.json();
+        // Handle cases where response might not be JSON
+        let data: any;
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            data = await response.json();
+        } else {
+            data = { message: await response.text() };
+        }
 
         if (!response.ok) {
             throw new ApiError(
@@ -39,12 +51,17 @@ export async function fetchApi<T>(
         }
 
         // The Express backend wraps responses in `{ status: 'success', data: ... }`
-        return data.data as T;
+        // but some internal APIs might return the data directly
+        return (data.data !== undefined ? data.data : data) as T;
     } catch (error) {
         if (error instanceof ApiError) {
             throw error;
         }
-        // Transform network/fetch errors into standard ApiErrors
-        throw new ApiError(500, error instanceof Error ? error.message : "Network error occurred");
+        console.error("API fetch failed:", error);
+
+        throw new ApiError(
+            500,
+            error instanceof Error ? error.message : "Network error occurred"
+        );
     }
 }

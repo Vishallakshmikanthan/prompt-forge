@@ -2,69 +2,66 @@ import prisma from '../config/prisma';
 
 /**
  * Trending Ranking Logic:
- * score = (vote_count * 2) + (fork_count * 3) + (bookmark_count * 1.5) + recency_boost
+ * score = (likes * 3) + (forks * 4) + (views * 0.5)
  */
 
-export const getTrendingPrompts = async (limit: number = 10) => {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+export const getTrendingPrompts = async (limit: number = 12) => {
+    // We use queryRaw to implement the specific scoring formula efficiently in the DB
+    const prompts = await prisma.$queryRaw`
+        SELECT p.*, 
+               u.username as "authorUsername",
+               u.email as "authorEmail",
+               u."avatarUrl" as "authorAvatar",
+               COALESCE(pa.views, 0) as views,
+               COALESCE(pa.votes, 0) as likes,
+               COALESCE(pa.forks, 0) as forks,
+               (COALESCE(pa.votes, 0) * 3 + COALESCE(pa.forks, 0) * 4 + COALESCE(pa.views, 0) * 0.5) AS trending_score
+        FROM "Prompt" p
+        LEFT JOIN "users" u ON p."authorId" = u.id
+        LEFT JOIN "PromptAnalytics" pa ON p.id = pa."promptId"
+        WHERE p."moderationStatus" = 'approved'
+        ORDER BY trending_score DESC
+        LIMIT ${limit}
+    `;
 
-    const prompts = await prisma.prompt.findMany({
-        where: {
-            moderationStatus: 'approved',
-            createdAt: {
-                gte: thirtyDaysAgo,
-            },
+    // Map the raw results to match the expected Prompt interface
+    return (prompts as any[]).map(p => ({
+        ...p,
+        author: {
+            id: p.authorId,
+            username: p.username || p.authorUsername,
+            email: p.email || p.authorEmail,
+            avatarUrl: p.avatarUrl || p.authorAvatar
         },
-        include: {
-            author: {
-                select: { id: true, username: true, email: true },
-            },
-            _count: {
-                select: {
-                    votes: true,
-                    forkedPrompts: true,
-                    bookmarks: true,
-                },
-            },
+        analytics: {
+            views: p.views,
+            votes: p.likes,
+            forks: p.forks
         },
-    });
-
-    // Calculate scores and sort in memory for simplicity of the formula logic
-    // In a real large-scale app, this would be a raw query or materialized view
-    const rankedPrompts = prompts.map((prompt: any) => {
-        const voteCount = prompt._count.votes;
-        const forkCount = prompt._count.forkedPrompts;
-        const bookmarkCount = prompt._count.bookmarks;
-
-        // Recency boost: 100 points if created in the last 24 hours, 50 if last 3 days
-        const now = new Date();
-        const hoursSinceCreation = (now.getTime() - prompt.createdAt.getTime()) / (1000 * 60 * 60);
-        let recencyBoost = 0;
-        if (hoursSinceCreation <= 24) {
-            recencyBoost = 100;
-        } else if (hoursSinceCreation <= 72) {
-            recencyBoost = 50;
+        _count: {
+            votes: p.likes,
+            forkedPrompts: p.forks,
+            bookmarks: 0
         }
-
-        const trendingScore = (voteCount * 2) + (forkCount * 3) + (bookmarkCount * 1.5) + recencyBoost;
-
-        return { ...prompt, trendingScore };
-    });
-
-    return rankedPrompts.sort((a: any, b: any) => b.trendingScore - a.trendingScore).slice(0, limit);
+    }));
 };
 
-export const getTopPrompts = async (limit: number = 10) => {
+export const getTopPrompts = async (limit: number = 12) => {
+    return getPopularPrompts(limit);
+};
+
+export const getPopularPrompts = async (limit: number = 12) => {
     return prisma.prompt.findMany({
         take: limit,
+        where: { moderationStatus: 'approved' },
         orderBy: {
-            score: 'desc',
+            score: 'desc', 
         },
         include: {
             author: {
-                select: { id: true, username: true, email: true },
+                select: { id: true, username: true, email: true, avatarUrl: true },
             },
+            analytics: true,
             _count: {
                 select: {
                     votes: true,
@@ -76,16 +73,18 @@ export const getTopPrompts = async (limit: number = 10) => {
     });
 };
 
-export const getNewestPrompts = async (limit: number = 10) => {
+export const getNewestPrompts = async (limit: number = 12) => {
     return prisma.prompt.findMany({
         take: limit,
+        where: { moderationStatus: 'approved' },
         orderBy: {
             createdAt: 'desc',
         },
         include: {
             author: {
-                select: { id: true, username: true, email: true },
+                select: { id: true, username: true, email: true, avatarUrl: true },
             },
+            analytics: true,
             _count: {
                 select: {
                     votes: true,
@@ -98,15 +97,12 @@ export const getNewestPrompts = async (limit: number = 10) => {
 };
 
 export const getHotPrompts = async (limit: number = 10) => {
-    // Hot prompts can be defined as recently highly voted prompts
-    // For now, let's use a similar logic to trending but with a focus on recent votes if we had vote timestamps.
-    // Since we don't have vote timestamps in the Vote model, we'll use a subset of trending or just top within a recency window.
-
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
     return prisma.prompt.findMany({
         where: {
+            moderationStatus: 'approved',
             createdAt: {
                 gte: oneWeekAgo
             }
@@ -117,8 +113,9 @@ export const getHotPrompts = async (limit: number = 10) => {
         },
         include: {
             author: {
-                select: { id: true, username: true, email: true },
+                select: { id: true, username: true, email: true, avatarUrl: true },
             },
+            analytics: true,
             _count: {
                 select: {
                     votes: true,

@@ -21,14 +21,14 @@ export function PromptMeta({ category, aiModel, tags = [], className }: PromptMe
                 {aiModel}
             </Badge>
 
-            {tags.slice(0, 2).map((tag) => (
+            {tags && tags.slice(0, 2).map((tag) => (
                 <Badge key={tag} variant="outline" className="gap-1 text-xs text-muted-foreground hidden sm:flex">
                     <Tag className="w-3 h-3" />
                     {tag}
                 </Badge>
             ))}
 
-            {tags.length > 2 && (
+            {tags && tags.length > 2 && (
                 <Badge variant="outline" className="text-xs text-muted-foreground hidden sm:inline-flex">
                     +{tags.length - 2}
                 </Badge>

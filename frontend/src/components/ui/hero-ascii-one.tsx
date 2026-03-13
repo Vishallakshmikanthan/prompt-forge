@@ -69,6 +69,7 @@ export function HeroAscii() {
                     // Find and remove any elements containing branding text
                     const allElements = container.querySelectorAll('*');
                     allElements.forEach(el => {
+                        const htmlEl = el as HTMLElement;
                         const text = (el.textContent || '').toLowerCase();
                         const title = (el.getAttribute('title') || '').toLowerCase();
                         const href = (el.getAttribute('href') || '').toLowerCase();
@@ -80,13 +81,13 @@ export function HeroAscii() {
                             title.includes('unicorn') ||
                             href.includes('unicorn.studio')
                         ) {
-                            el.style.display = 'none';
-                            el.style.visibility = 'hidden';
-                            el.style.opacity = '0';
-                            el.style.pointerEvents = 'none';
-                            el.style.position = 'absolute';
-                            el.style.left = '-9999px';
-                            el.style.top = '-9999px';
+                            htmlEl.style.display = 'none';
+                            htmlEl.style.visibility = 'hidden';
+                            htmlEl.style.opacity = '0';
+                            htmlEl.style.pointerEvents = 'none';
+                            htmlEl.style.position = 'absolute';
+                            htmlEl.style.left = '-9999px';
+                            htmlEl.style.top = '-9999px';
                             // Also try to remove it
                             try { el.remove(); } catch (e) { }
                         }

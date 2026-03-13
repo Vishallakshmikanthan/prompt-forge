@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../../backend/node_modules/.prisma/client"
 }
 
 datasource db {
@@ -11,24 +12,28 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  username     String     @unique
-  email        String     @unique
-  displayName  String?
-  reputation   Int        @default(0)
-  bio          String?
-  avatarUrl    String?
-  githubUrl    String?
-  website      String?
-  location     String?
-  skills       Json?
-  authProvider String     @default("google")
-  passwordHash String?
-  createdAt    DateTime   @default(now())
-  prompts      Prompt[]
-  votes        Vote[]
-  bookmarks    Bookmark[]
+  id            String     @id @default(cuid())
+  username      String     @unique
+  email         String     @unique
+  displayName   String?
+  reputation    Int        @default(0)
+  bio           String?
+  avatarUrl     String?
+  githubUrl     String?
+  website       String?
+  location      String?
+  skills        Json?
+  provider      String     @default("google")
+  password_hash String?
+  created_at    DateTime   @default(now())
+  prompts       Prompt[]
+  votes         Vote[]
+  bookmarks     Bookmark[]
   notifications Notification[]
+  discussions   Discussion[]
+  forks         PromptFork[]
+
+  @@map("users")
 }
 
 model Prompt {
@@ -53,6 +58,7 @@ model Prompt {
   votes     Vote[]
   bookmarks Bookmark[]
   analytics PromptAnalytics?
+  forkEvents PromptFork[] @relation("PromptForks")
 
   @@index([category])
   @@index([moderationStatus])
@@ -115,5 +121,35 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
+  @@index([userId])
+}
+
+model Discussion {
+  id        String   @id @default(cuid())
+  title     String
+  excerpt   String
+  content   String
+  category  String
+  tags      String[]
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  upvotes   Int      @default(0)
+  comments  Int      @default(0)
+  trending  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([category])
+}
+
+model PromptFork {
+  id             String   @id @default(cuid())
+  promptId       String
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  originalPrompt Prompt   @relation("PromptForks", fields: [promptId], references: [id], onDelete: Cascade)
+
+  @@index([promptId])
   @@index([userId])
 }

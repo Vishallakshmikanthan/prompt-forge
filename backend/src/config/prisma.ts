@@ -1,4 +1,4 @@
-import { PrismaClient } from '../generated/client';
+import { PrismaClient } from '@prisma/client';
 // PrismaClient is auto-generated based on the schema at database/prisma/schema.prisma
 
 // Singleton pattern to avoid multiple PrismaClient instances in development

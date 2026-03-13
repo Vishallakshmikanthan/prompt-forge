@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { Terminal, Copy, CheckCircle2 } from "lucide-react"
 import { useState } from "react"
 import { SparklesCore } from "@/components/backgrounds/sparkles"
+import Link from "next/link"
 
 const codeSnippet = `// Integrate PromptForge in seconds
 import { PromptForge } from '@promptforge/sdk';
@@ -73,9 +74,11 @@ export function DeveloperFocusSection() {
                             ))}
                         </ul>
 
-                        <Button className="rounded-full bg-white text-black hover:bg-gray-200 hover:scale-105 transition-all h-12 px-8 font-semibold">
-                            Read Documentation
-                        </Button>
+                        <Link href="/documentation">
+                            <Button className="rounded-full bg-white text-black hover:bg-gray-200 hover:scale-105 transition-all h-12 px-8 font-semibold">
+                                Read Documentation
+                            </Button>
+                        </Link>
                     </motion.div>
 
                     <motion.div

@@ -5,7 +5,6 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { type Container, type ISourceOptions } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
 
 type ParticlesProps = {
     id?: string;
@@ -30,7 +29,7 @@ export const SparklesCore = (props: ParticlesProps) => {
         particleDensity,
     } = props;
     const [init, setInit] = useState(false);
-    const { theme } = useTheme();
+    const theme = "dark";
 
     useEffect(() => {
         initParticlesEngine(async (engine) => {

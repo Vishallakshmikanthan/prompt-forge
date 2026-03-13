@@ -12,6 +12,7 @@ export function UserAvatar() {
 
     return (
         <Link href={`/user/${username}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <span className="hidden sm:inline-block xl:hidden text-sm font-medium text-muted-foreground group-hover:text-accent">Profile</span>
             {avatarUrl ? (
                 <img
                     src={avatarUrl}

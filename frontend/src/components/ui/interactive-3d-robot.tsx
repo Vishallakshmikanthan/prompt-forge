@@ -18,7 +18,7 @@ interface InteractiveRobotSplineProps {
 export const InteractiveRobotSpline = forwardRef<InteractiveRobotRef, InteractiveRobotSplineProps>(
     ({ scene, className }, ref) => {
         const splineApp = useRef<any>(null);
-        const frameRef = useRef<number>();
+        const frameRef = useRef<number>(0);
 
         // Target rotation (normalized -1 to 1)
         const targetRot = useRef({ x: 0, y: 0 });

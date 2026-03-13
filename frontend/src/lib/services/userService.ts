@@ -125,6 +125,12 @@ export const userService = {
     async getTimeline(username: string): Promise<TimelineEvent[]> {
         return fetchApi<TimelineEvent[]>(`/users/${username}/timeline`);
     },
+    
+    async getOwnProfile(userId: string): Promise<{ user: any; stats: any }> {
+        return fetchApi<{ user: any; stats: any }>(`/profile`, {
+            headers: { 'user-id': userId }
+        });
+    },
 };
 
 export interface LeaderboardUser {

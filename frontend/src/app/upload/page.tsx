@@ -19,7 +19,7 @@ export default function UploadPage() {
 
     useEffect(() => {
         if (!isLoading && !user) {
-            router.push("/");
+            router.push("/login");
         }
 
         const isFork = searchParams.get("fork") === "true";

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { motion } from "framer-motion";
 
 export function Magnetic({ children, pullStrength = 0.35, elasticReturn = true }: { children: React.ReactElement, pullStrength?: number, elasticReturn?: boolean }) {
     const ref = useRef<HTMLDivElement>(null);
@@ -45,24 +46,13 @@ export function Magnetic({ children, pullStrength = 0.35, elasticReturn = true }
         };
     }, [pullStrength, elasticReturn]);
 
-    // Use a custom string if the children is a string to prevent cloneElement issues, 
-    // though the typing expects a ReactElement.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return React.cloneElement(children as React.ReactElement<any>, {
-        ref: (node: HTMLDivElement) => {
-            // Forward ref back to our internal ref
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (ref as any).current = node;
-
-            // Chain to existing ref if possible
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const childRef = (children as any).ref;
-            if (typeof childRef === "function") {
-                childRef(node);
-            } else if (childRef && "current" in childRef) {
-                // eslint-disable-next-line
-                childRef.current = node;
-            }
-        }
-    });
+    return (
+        <motion.div
+            ref={ref}
+            className="inline-block"
+            initial={false}
+        >
+            {children}
+        </motion.div>
+    );
 }
