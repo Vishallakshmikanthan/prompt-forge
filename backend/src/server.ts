@@ -45,22 +45,24 @@ app.use('/api/', apiRateLimiter);
 const allowedOrigins = [
     process.env.FRONTEND_URL,
     'https://prompt-forge-two-indol.vercel.app',
-    'http://localhost:3000'
+    'https://prompt-forge-two-indol.vercel.app/',
+    'http://localhost:3000',
+    'http://localhost:3001'
 ].filter(Boolean) as string[];
 
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+        if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            console.warn(`[CORS] Rejected origin: ${origin}`);
+            callback(null, false); // Don't throw error, just reject
         }
     },
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'user-id'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'user-id', 'x-requested-with'],
     credentials: true,
+    maxAge: 86400
 }));
 
 app.use(morgan('dev'));
