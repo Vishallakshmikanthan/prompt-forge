@@ -62,5 +62,13 @@ npx prisma migrate deploy
 
 ---
 
-## 4. Environment Checklist
-Ensure your `.env` files are never committed. Use the `.env.example` at the root as a template for what keys are required in your deployment dashboard.
+## 5. Pro Tip: Handling the "Chicken & Egg" URL Problem
+
+When deploying for the first time, your Frontend needs your Backend URL, and your Backend needs your Frontend URL.
+
+**The Solution:**
+1.  **Deploy the Backend First**: Use a placeholder for `FRONTEND_URL` (like `https://placeholder.com`).
+2.  **Get the Backend URL**: Once the backend is deployed, Vercel/Railway will give you a URL (e.g., `https://my-backend.vercel.app`).
+3.  **Deploy the Frontend**: In the Frontend project settings, set `NEXT_PUBLIC_API_URL` to `https://my-backend.vercel.app/api`.
+4.  **Update the Backend**: Once the Frontend is deployed and you have its real URL (e.g., `https://my-frontend.vercel.app`), go back to your **Backend** settings and update `FRONTEND_URL` to the real one. 
+5.  **Redeploy**: Most providers will automatically redeploy when you save environment variables.
