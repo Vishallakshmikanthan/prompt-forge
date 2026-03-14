@@ -25,7 +25,7 @@ export function ProfileStats({ stats, reputation }: ProfileStatsProps) {
                     <Sparkles className="h-4 w-4 text-orange-500" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{reputation.toLocaleString()}</div>
+                    <div className="text-2xl font-bold">{(reputation || 0).toLocaleString()}</div>
                     <p className="text-xs text-muted-foreground mt-1">
                         Community rating
                     </p>
@@ -38,7 +38,7 @@ export function ProfileStats({ stats, reputation }: ProfileStatsProps) {
                     <Library className="h-4 w-4 text-blue-500" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.promptsCreated.toLocaleString()}</div>
+                    <div className="text-2xl font-bold">{(stats?.promptsCreated || 0).toLocaleString()}</div>
                     <p className="text-xs text-muted-foreground mt-1">
                         Original prompts shared
                     </p>
@@ -51,7 +51,7 @@ export function ProfileStats({ stats, reputation }: ProfileStatsProps) {
                     <GitFork className="h-4 w-4 text-green-500" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.forksCreated.toLocaleString()}</div>
+                    <div className="text-2xl font-bold">{(stats?.forksCreated || 0).toLocaleString()}</div>
                     <p className="text-xs text-muted-foreground mt-1">
                         Prompts derived from others
                     </p>
@@ -64,7 +64,7 @@ export function ProfileStats({ stats, reputation }: ProfileStatsProps) {
                     <Bookmark className="h-4 w-4 text-indigo-500" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.bookmarksSaved.toLocaleString()}</div>
+                    <div className="text-2xl font-bold">{(stats?.bookmarksSaved || 0).toLocaleString()}</div>
                     <p className="text-xs text-muted-foreground mt-1">
                         Prompts saved for later
                     </p>

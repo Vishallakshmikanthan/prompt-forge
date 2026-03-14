@@ -59,7 +59,7 @@ app.use(cors({
         }
     },
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'user-id'],
     credentials: true,
 }));
 

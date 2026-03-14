@@ -223,14 +223,15 @@ export const getOwnProfile = async (
                 data: {
                     user: {
                         id: profile.id,
-                        username: profile.username,
-                        email: profile.email,
-                        joined_at: profile.createdAt
+                        username: profile.username || 'Developer',
+                        email: profile.email || '',
+                        joined_at: profile.createdAt || new Date().toISOString(),
+                        bio: (profile as any).bio || ''
                     },
                     stats: {
-                        prompts_created: profile.stats.promptsCreated,
-                        bookmarks: profile.stats.bookmarksSaved,
-                        forks: profile.stats.forksCreated,
+                        prompts_created: profile.stats?.promptsCreated || 0,
+                        bookmarks: profile.stats?.bookmarksSaved || 0,
+                        forks: profile.stats?.forksCreated || 0,
                         reputation: profile.reputation ?? 0
                     }
                 } 
@@ -246,7 +247,8 @@ export const getOwnProfile = async (
                     id: userId,
                     username: 'New User',
                     email: '',
-                    joined_at: new Date().toISOString()
+                    joined_at: new Date().toISOString(),
+                    bio: ''
                 },
                 stats: {
                     prompts_created: 0,

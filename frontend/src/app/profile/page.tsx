@@ -16,6 +16,7 @@ function ProfileContent() {
     const router = useRouter();
     const [profileData, setProfileData] = useState<any>(null);
     const [isFetching, setIsFetching] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!authLoading) {
@@ -23,12 +24,18 @@ function ProfileContent() {
                 router.replace("/login");
             } else {
                 setIsFetching(true);
+                setError(null);
                 userService.getOwnProfile(user.id)
                     .then(data => {
-                        setProfileData(data);
+                        if (data) {
+                            setProfileData(data);
+                        } else {
+                            setError("No profile data received");
+                        }
                     })
                     .catch(err => {
                         console.error("Failed to fetch profile", err);
+                        setError(err.message || "Failed to load profile data");
                     })
                     .finally(() => {
                         setIsFetching(false);
@@ -36,6 +43,18 @@ function ProfileContent() {
             }
         }
     }, [user, authLoading, router]);
+
+    if (error) {
+        return (
+            <div className="container py-20 text-center animate-in fade-in duration-500">
+                <div className="bg-destructive/10 text-destructive p-6 rounded-2xl border border-destructive/20 inline-block max-w-md mx-auto">
+                    <h2 className="text-xl font-bold mb-2">Error Loading Profile</h2>
+                    <p className="mb-4">{error}</p>
+                    <Button onClick={() => window.location.reload()}>Retry</Button>
+                </div>
+            </div>
+        );
+    }
 
     if (authLoading || isFetching || !profileData) {
         return (
