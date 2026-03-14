@@ -38,9 +38,6 @@ app.use(requestMonitor);
 // Apply security headers first
 app.use(securityHeaders);
 
-// Apply rate limiting early
-app.use('/api/', apiRateLimiter);
-
 // CORS configuration
 const allowedOrigins = [
     process.env.FRONTEND_URL,
@@ -56,7 +53,7 @@ app.use(cors({
             callback(null, true);
         } else {
             console.warn(`[CORS] Rejected origin: ${origin}`);
-            callback(null, false); // Don't throw error, just reject
+            callback(null, false);
         }
     },
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'PUT'],
@@ -65,11 +62,8 @@ app.use(cors({
     maxAge: 86400
 }));
 
-app.use(morgan('dev'));
-app.use(express.json({ limit: '10kb' })); // Limit body size
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-
-// ─── Health Check ─────────────────────────────────────────────────────────────
+// ─── Health Check & Root ─────────────────────────────────────────────────────
+app.get('/', (req, res) => res.status(200).send('PromptForge API is Running'));
 app.get('/api/health', async (_req, res) => {
     let dbStatus = 'unknown';
     try {
@@ -78,15 +72,19 @@ app.get('/api/health', async (_req, res) => {
     } catch (error) {
         dbStatus = 'disconnected';
     }
-
     res.status(200).json({
         status: 'ok',
-        message: 'PromptForge API is healthy',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        database: dbStatus
+        database: dbStatus,
+        timestamp: new Date().toISOString()
     });
 });
+
+// Apply rate limiting early
+app.use('/api', apiRateLimiter);
+
+app.use(morgan('dev'));
+app.use(express.json({ limit: '10kb' })); // Limit body size
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/prompts', discoveryRoutes);
@@ -97,13 +95,13 @@ app.use('/api/prompts', analyticsRoutes);
 app.use('/api/prompts', promptRoutes);
 
 app.use('/api/auth', require('./routes/authRoutes').default);
-app.use('/api/bookmarks', bookmarkRoutes); // Updated prefix for clarity
-app.use('/api/notifications', notificationRoutes); // Updated prefix for clarity
+app.use('/api/bookmarks', bookmarkRoutes);
+app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/discussions', discussionRoutes);
-app.use('/api/recommendations', recommendationRoutes); // For trending/personalized without 'prompts' prefix
+app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/stats', statsRoutes);
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────
