@@ -107,11 +107,11 @@ app.use('/api/discussions', discussionRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/stats', statsRoutes);
 
-// 404 Handler for missing API routes
-app.use('/api/*', (req, res) => {
+// 404 Handler for missing API routes (must be after all other /api routes)
+app.use('/api', (req, res) => {
     res.status(404).json({
         status: 'fail',
-        message: `Route ${req.originalUrl} not found`
+        message: `API Route ${req.originalUrl} not found`
     });
 });
 
@@ -119,8 +119,8 @@ app.use('/api/*', (req, res) => {
 // Sentry error handler must be before any other error middleware and after all controllers
 Sentry.setupExpressErrorHandler(app);
 
-// Catch-all route for debugging
-app.all('*', (req, res) => {
+// Catch-all route for debugging (Express 5 syntax)
+app.all('{*path}', (req, res) => {
     res.status(200).json({
         status: 'debug',
         message: 'Express catch-all reached',
