@@ -1,6 +1,7 @@
+import { fetchApi } from '../api';
 import { type Prompt } from './promptService';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+
 
 export const recommendationService = {
     /**
@@ -8,8 +9,7 @@ export const recommendationService = {
      */
     getSimilarPrompts: async (promptId: string, limit: number = 5): Promise<Prompt[]> => {
         try {
-            const response = await fetch(`${API_URL}/prompts/${promptId}/similar?limit=${limit}`);
-            const result = await response.json();
+            return await fetchApi<Prompt[]>(`/prompts/${promptId}/similar?limit=${limit}`);
 
             if (result.status === 'success') {
                 return result.data;
@@ -26,8 +26,7 @@ export const recommendationService = {
      */
     getPersonalizedPrompts: async (userId: string, limit: number = 10): Promise<Prompt[]> => {
         try {
-            const response = await fetch(`${API_URL}/recommendations/personalized?userId=${userId}&limit=${limit}`);
-            const result = await response.json();
+            return await fetchApi<Prompt[]>(`/recommendations/personalized?userId=${userId}&limit=${limit}`);
 
             if (result.status === 'success') {
                 return result.data;

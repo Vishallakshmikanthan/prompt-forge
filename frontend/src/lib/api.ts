@@ -6,8 +6,13 @@ const isServer = typeof window === 'undefined';
 let BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 // Ensure absolute URLs have the /api prefix since the backend routes are mounted there
-if (BASE_URL.startsWith('http') && !BASE_URL.endsWith('/api')) {
-    BASE_URL = `${BASE_URL.replace(/\/$/, '')}/api`;
+if (BASE_URL.startsWith('http')) {
+    const cleanBase = BASE_URL.replace(/\/$/, '').replace(/\/api$/, '');
+    BASE_URL = `${cleanBase}/api`;
+}
+
+if (!isServer && BASE_URL) {
+    console.log(`[API] Initialized with BASE_URL: ${BASE_URL}`);
 }
 
 export class ApiError extends Error {
