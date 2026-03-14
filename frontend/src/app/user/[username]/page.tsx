@@ -16,12 +16,23 @@ import { Button } from "@/components/ui/button";
 import { userService } from "@/lib/services/userService";
 
 async function getProfileData(username: string) {
+    console.log(`[Server] Fetching profile data for: ${username}`);
     try {
-        const [profile, prompts, forks, bookmarks, activityGraph, analytics, featured, collections, timeline] = await Promise.all([
-            userService.getUserProfile(username),
-            userService.getUserPrompts(username),
-            userService.getUserForks(username),
-            userService.getUserBookmarks(username),
+        const profile = await userService.getUserProfile(username).catch(err => {
+            console.error(`[Server] Profile fetch failed for ${username}:`, err.message);
+            return null;
+        });
+
+        if (!profile) {
+            console.warn(`[Server] User profile not found for: ${username}`);
+            return null;
+        }
+
+        // Secondary data - allow failure
+        const [prompts, forks, bookmarks, activityGraph, analytics, featured, collections, timeline] = await Promise.all([
+            userService.getUserPrompts(username).catch(() => []),
+            userService.getUserForks(username).catch(() => []),
+            userService.getUserBookmarks(username).catch(() => []),
             userService.getActivityGraph(username).catch(() => ({ days: [], totalContributions: 0 })),
             userService.getAnalytics(username).catch(() => []),
             userService.getFeaturedPrompt(username).catch(() => null),
@@ -31,7 +42,7 @@ async function getProfileData(username: string) {
 
         return { profile, prompts, forks, bookmarks, activityGraph, analytics, featured, collections, timeline };
     } catch (error: any) {
-        console.error("Profile fetch failed", error);
+        console.error(`[Server] Unexpected error fetching profile data for ${username}:`, error);
         return null;
     }
 }
