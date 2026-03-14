@@ -52,7 +52,26 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
     const data = await getProfileData(username);
 
     if (!data) {
-        notFound();
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+                <div className="bg-destructive/10 p-6 rounded-2xl mb-6">
+                    <Bot className="w-12 h-12 text-destructive mb-4 mx-auto" />
+                    <h1 className="text-3xl font-bold mb-2">Profile Unavailable</h1>
+                    <p className="text-muted-foreground max-w-md mx-auto">
+                        We couldn't reach the PromptForge API to load the profile for "{username}". 
+                        Please ensure the backend is running and reachable.
+                    </p>
+                </div>
+                <div className="flex gap-4">
+                    <Link href="/explore">
+                        <Button className="rounded-full px-6">Explore Prompts</Button>
+                    </Link>
+                    <Link href="/">
+                        <Button variant="outline" className="rounded-full px-6">Back Home</Button>
+                    </Link>
+                </div>
+            </div>
+        );
     }
 
     const profile = data.profile || {} as any;
