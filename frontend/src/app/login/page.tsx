@@ -7,12 +7,15 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { fetchApi } from "@/lib/api";
 
 export default function LoginPage() {
     const { user, signInWithGoogle, isLoading } = useAuth();
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isEmailLoginLoading, setIsEmailLoginLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (user) {
