@@ -27,20 +27,28 @@ The Next.js frontend is optimized for Vercel.
 
 ---
 
-## 2. Backend Deployment (Railway/Render)
+## 2. Backend Deployment (Express)
 
-While Vercel can run serverless functions, a dedicated Express server is better suited for the current backend architecture.
+You have two main ways to deploy the backend:
 
-### Recommended: Railway.app
-1. Create a new project on Railway.
-2. Connect your repo and point to the `backend` directory.
-3. Configure the **Build Command**: `cd backend && npm install && npm run build`
-4. Configure the **Start Command**: `npm start`
-5. Add Environment Variables:
-   - `DATABASE_URL`: Your managed Postgres connection string.
-   - `JWT_SECRET`: A random 32+ character string.
-   - `FRONTEND_URL`: Your Vercel deployment URL.
-   - `NODE_ENV`: `production`
+### Option A: Railway/Render (Recommended for long servers)
+*Used if you want a persistent server that doesn't sleep.*
+1. Create a project on [Railway.app](https://railway.app).
+2. Root Directory: `backend`.
+3. Build Command: `npm install && npm run build`.
+4. Start Command: `npm start`.
+
+### Option B: Vercel (Serverless Functions)
+*Used if you want everything on Vercel. Your Express app will be converted to Serverless Functions.*
+1. Create a **NEW** project on Vercel from the same repo.
+2. **Framework Preset:** `Other`.
+3. **Root Directory:** Leave as the project root (do **not** select `backend`).
+4. **Build & Output Settings:**
+   - Build Command: `cd backend && npm install && npm run build`
+   - Output Directory: `backend/dist`
+5. **Install Command:** `cd backend && npm install`
+6. **Environment Variables:** Add `DATABASE_URL`, `JWT_SECRET`, etc.
+7. **Important**: Add a `vercel.json` in the `backend` folder as shown below to route requests to your `server.ts`.
 
 ---
 
