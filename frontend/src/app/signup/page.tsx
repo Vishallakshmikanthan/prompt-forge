@@ -33,33 +33,35 @@ export default function SignupPage() {
 
         if (formData.password.length < 8) {
             toast.error("Password must be at least 8 characters");
+            setIsLoading(false);
             return;
         }
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/auth/signup`, {
+            const { email, password, username } = formData;
+            const data = await fetchApi<any>('/auth/signup', {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
                 body: JSON.stringify({
-                    username: formData.username,
-                    email: formData.email,
-                    password: formData.password
-                })
+                    email,
+                    password,
+                    username,
+                }),
             });
 
-            const data = await res.json();
+            const { token, user: userData } = data;
+            
+            // Store session
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", JSON.stringify(userData));
 
-            if (!res.ok) {
-                toast.error(data.error || data.message || "Signup failed");
-                return;
-            }
-
-            toast.success("Account created successfully! Please log in.");
-            router.push("/login");
-        } catch (error) {
-            toast.error("An error occurred during signup");
+            toast.success("Account created successfully!");
+            router.push("/explore");
+        } catch (err: any) {
+            console.error("Signup Error:", err);
+            setError(err.message || "Failed to create account");
+            toast.error(err.message || "Failed to sign up");
+        } finally {
+            setIsLoading(false);
         }
     };
 

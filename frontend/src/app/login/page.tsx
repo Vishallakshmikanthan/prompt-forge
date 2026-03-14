@@ -22,29 +22,29 @@ export default function LoginPage() {
 
     const handleEmailLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsEmailLoginLoading(true);
+        setError(null);
         
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/auth/login`, {
+            const data = await fetchApi<any>('/auth/login', {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password }),
             });
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                toast.error(data.error || "Invalid credentials");
-                return;
-            }
+            const { token, user: userData } = data;
+            
+            // Store session
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", JSON.stringify(userData));
 
             toast.success("Login successful!");
-            // In a real app, we'd set the token in cookies/localStorage and update auth context
-            // For now, we'll redirect to home as requested
-            router.push("/");
-        } catch (error) {
-            toast.error("An error occurred during login");
+            router.push("/explore");
+        } catch (err: any) {
+            console.error("Login Error:", err);
+            setError(err.message || "Invalid credentials");
+            toast.error(err.message || "Failed to login");
+        } finally {
+            setIsEmailLoginLoading(false);
         }
     };
 

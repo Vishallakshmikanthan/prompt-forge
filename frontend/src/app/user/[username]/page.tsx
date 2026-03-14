@@ -16,17 +16,17 @@ import { Button } from "@/components/ui/button";
 import { userService } from "@/lib/services/userService";
 
 async function getProfileData(username: string) {
-    console.log(`[Server] Fetching profile data for: ${username}`);
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || '';
+    console.log(`[Server] Fetching user: ${username} | Backend: ${backendUrl}`);
+    
     try {
+        // Primary user fetch - must succeed
         const profile = await userService.getUserProfile(username).catch(err => {
-            console.error(`[Server] Profile fetch failed for ${username}:`, err.message);
+            console.error(`[Server] Fatal: User profile fetch failed for ${username}:`, err.message);
             return null;
         });
 
-        if (!profile) {
-            console.warn(`[Server] User profile not found for: ${username}`);
-            return null;
-        }
+        if (!profile) return null;
 
         // Secondary data - allow failure
         const [prompts, forks, bookmarks, activityGraph, analytics, featured, collections, timeline] = await Promise.all([

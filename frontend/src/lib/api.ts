@@ -3,7 +3,12 @@
  */
 
 const isServer = typeof window === 'undefined';
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+let BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+
+// Ensure absolute URLs have the /api prefix since the backend routes are mounted there
+if (BASE_URL.startsWith('http') && !BASE_URL.endsWith('/api')) {
+    BASE_URL = `${BASE_URL.replace(/\/$/, '')}/api`;
+}
 
 export class ApiError extends Error {
     constructor(public status: number, message: string) {
