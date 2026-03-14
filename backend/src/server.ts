@@ -16,6 +16,7 @@ import recommendationRoutes from './routes/recommendationRoutes';
 import discussionRoutes from './routes/discussionRoutes';
 import statsRoutes from './routes/statsRoutes';
 import profileRoutes from './routes/profileRoutes';
+import authRoutes from './routes/authRoutes';
 import securityHeaders from './middleware/securityHeaders';
 import { apiRateLimiter } from './middleware/rateLimiter';
 import errorHandler from './middleware/errorHandler';
@@ -63,6 +64,7 @@ app.use(cors({
 }));
 
 // ─── Health Check & Root ─────────────────────────────────────────────────────
+// These MUST be before rate limiting and other middleware to verify connectivity
 app.get('/', (req, res) => res.status(200).send('PromptForge API is Running'));
 app.get('/api/health', async (_req, res) => {
     let dbStatus = 'unknown';
@@ -83,7 +85,7 @@ app.get('/api/health', async (_req, res) => {
 app.use('/api', apiRateLimiter);
 
 app.use(morgan('dev'));
-app.use(express.json({ limit: '10kb' })); // Limit body size
+app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -94,7 +96,7 @@ app.use('/api/prompts', versionRoutes);
 app.use('/api/prompts', analyticsRoutes);
 app.use('/api/prompts', promptRoutes);
 
-app.use('/api/auth', require('./routes/authRoutes').default);
+app.use('/api/auth', authRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
@@ -103,6 +105,14 @@ app.use('/api/search', searchRoutes);
 app.use('/api/discussions', discussionRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/stats', statsRoutes);
+
+// 404 Handler for missing API routes
+app.use('/api/*', (req, res) => {
+    res.status(404).json({
+        status: 'fail',
+        message: `Route ${req.originalUrl} not found`
+    });
+});
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────
 // Sentry error handler must be before any other error middleware and after all controllers
