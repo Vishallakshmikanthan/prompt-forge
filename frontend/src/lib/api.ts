@@ -3,8 +3,7 @@
  */
 
 const isServer = typeof window === 'undefined';
-const DEFAULT_URL = isServer ? "http://127.0.0.1:4000/api" : "/api";
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || DEFAULT_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export class ApiError extends Error {
     constructor(public status: number, message: string) {
@@ -20,10 +19,12 @@ export async function fetchApi<T>(
     endpoint: string,
     options: RequestInit = {}
 ): Promise<T> {
-    // Ensure endpoint start with /
+    // Ensure endpoint starts with /
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    // If we're using relative paths, we don't want to double up on /api
-    const url = cleanEndpoint.startsWith('/api') ? cleanEndpoint : `${BASE_URL}${cleanEndpoint}`;
+    
+    // If we have a NEXT_PUBLIC_API_URL, we use it. 
+    // Otherwise, we use relative paths which will work if proxied or on same domain.
+    const url = BASE_URL ? `${BASE_URL}${cleanEndpoint}` : cleanEndpoint;
 
     try {
         const response = await fetch(url, {

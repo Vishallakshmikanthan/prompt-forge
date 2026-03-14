@@ -41,9 +41,23 @@ app.use(securityHeaders);
 // Apply rate limiting early
 app.use('/api/', apiRateLimiter);
 
-// CORS configuration (Hardened)
+// CORS configuration
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'https://prompt-forge-two-indol.vercel.app',
+    'http://localhost:3000'
+].filter(Boolean) as string[];
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
