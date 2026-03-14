@@ -133,9 +133,13 @@ app.all('*', (req, res) => {
 app.use(errorHandler);
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
-const server = app.listen(PORT, async () => {
-    console.log(`🚀 PromptForge API running on http://localhost:${PORT}`);
-    console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
+const HOST = '0.0.0.0';
+const server = app.listen(Number(PORT), HOST, async () => {
+    console.log(`🚀 PromptForge API is starting...`);
+    console.log(`📡 URL: http://${HOST}:${PORT}`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔑 SENTRY_DSN: ${process.env.SENTRY_DSN ? 'Configured' : 'Missing'}`);
+    console.log(`🔗 FRONTEND_URL: ${process.env.FRONTEND_URL || 'Not Set'}`);
 });
 
 export default app;
