@@ -49,20 +49,19 @@ const allowedOrigins = [
     'http://localhost:3001'
 ].filter(Boolean) as string[];
 
+// Enable CORS for all origins during debugging to rule out CORS as the cause of 404 symptoms
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
-            callback(null, true);
-        } else {
-            console.warn(`[CORS] Rejected origin: ${origin}`);
-            callback(null, false);
-        }
-    },
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'user-id', 'x-requested-with'],
+    origin: true,
     credentials: true,
-    maxAge: 86400
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'user-id', 'x-requested-with']
 }));
+
+// Request Logger early in the stack
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${req.headers.origin || 'None'}`);
+    next();
+});
 
 // ─── Health Check & Root ─────────────────────────────────────────────────────
 // These MUST be before rate limiting and other middleware to verify connectivity
