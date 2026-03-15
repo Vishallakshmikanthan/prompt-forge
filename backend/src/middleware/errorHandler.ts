@@ -19,6 +19,7 @@ const errorHandler = (
     if (isProduction) {
         console.error(`[Security Error] ${statusCode} - ${message} - Path: ${req.originalUrl} - IP: ${req.ip}`);
         if (statusCode === 500) {
+            console.error('[Full Error Stack]', err.stack);
             const Sentry = require('@sentry/node');
             Sentry.captureException(err);
         }
