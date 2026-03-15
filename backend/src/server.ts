@@ -31,6 +31,9 @@ initMonitoring();
 
 const app = express();
 
+// Required for Render/Vercel to handle rate limiting and IP discovery correctly
+app.set('trust proxy', 1);
+
 // Top-level diagnostic route (before any middleware)
 app.get('/ping', (req, res) => {
     res.status(200).send('pong');
