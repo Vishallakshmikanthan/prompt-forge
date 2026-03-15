@@ -30,6 +30,11 @@ import prisma from './config/prisma';
 initMonitoring();
 
 const app = express();
+
+// Top-level diagnostic route (before any middleware)
+app.get('/ping', (req, res) => {
+    res.status(200).send('pong');
+});
 const PORT = process.env.PORT || 4000;
 
 // ─── Middleware ────────────────────────────────────────────────────────────────
