@@ -19,7 +19,7 @@ RUN npm install
 # In docker-compose, we can set the context and dockerfile path.
 # If we run docker build from the backend directory, we need the schema.
 COPY src ./src
-COPY ../database/prisma ./prisma
+COPY prisma ./prisma
 
 # Generate Prisma Client
 RUN npx prisma generate
