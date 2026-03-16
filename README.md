@@ -1,189 +1,290 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Vishallakshmikanthan/prompt-forge/main/frontend/public/logo.png" alt="PromptForge Logo" width="200" />
-</p>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Vishallakshmikanthan/prompt-forge/main/frontend/public/logo.png" alt="PromptForge Logo" width="120"/>
 
-<h1 align="center">⚡ PromptForge</h1>
+  # ⚡ PromptForge
 
-<p align="center">
-  <strong>The ultimate collaborative platform for prompt engineers and AI developers.</strong><br/>
+  **The ultimate collaborative platform for prompt engineers and AI developers.**
+
   Discover, create, version, fork, and share high-performance AI prompts — all in one place.
-</p>
 
-<p align="center">
-  <a href="#-ideology">Ideology</a> •
-  <a href="#-design-inspirations">Design</a> •
-  <a href="#-tech-stack">Tech Stack</a> •
-  <a href="#-architecture">Architecture</a> •
-  <a href="#-working-flows">Workflows</a> •
-  <a href="#-database-design">Database</a> •
-  <a href="#-getting-started">Getting Started</a>
-</p>
+  [![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+  [![React](https://img.shields.io/badge/React-19.2.3-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Express](https://img.shields.io/badge/Express-5.2.1-000000?style=for-the-badge&logo=express)](https://expressjs.com/)
+  [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+  [![Prisma](https://img.shields.io/badge/Prisma-6.19.2-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js" alt="Next.js" />
-  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react" alt="React" />
-  <img src="https://img.shields.io/badge/Express-5-000000?style=for-the-badge&logo=express" alt="Express" />
-  <img src="https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma" alt="Prisma" />
-  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-</p>
+  [🌐 Live Demo](https://prompt-forge-two-indol.vercel.app) &nbsp;•&nbsp;
+  [📖 Documentation](https://prompt-forge-two-indol.vercel.app/documentation) &nbsp;•&nbsp;
+  [💬 Community](https://prompt-forge-two-indol.vercel.app/community) &nbsp;•&nbsp;
+  [🗂 Categories](https://prompt-forge-two-indol.vercel.app/categories)
+
+  > [!IMPORTANT]
+  > **🚧 Under Active Development** — PromptForge is currently in active development. While the core features are functional, expect frequent updates and new capabilities!
+</div>
 
 ---
 
-> [!IMPORTANT]
-> **🚧 Under Development:** PromptForge is currently in active development. While the core features are functional and you can start sharing your prompts today, expect frequent updates and new capabilities!
+## 📌 Table of Contents
+
+- [Project Overview](#-project-overview)
+- [Visual Interface](#-visual-interface)
+- [Key Features](#-key-features)
+- [Tech Stack](#️-tech-stack)
+- [System Architecture](#️-system-architecture)
+- [Database Schema](#-database-schema)
+- [API Documentation](#-api-documentation)
+- [Project Structure](#-project-structure)
+- [Installation & Setup](#-installation--setup)
+- [Usage Guide](#-usage-guide)
+- [Configuration](#️-configuration)
+- [Deployment](#-deployment)
+- [Development Workflow](#-development-workflow)
+- [Future Improvements](#-future-improvements)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## 🧠 Ideology
+## 🧠 Project Overview
 
-**PromptForge** is born from the belief that prompts are the code of the Generative AI era. Just as developers need GitHub to collaborate on traditional software, prompt engineers need a specialized platform to:
+**PromptForge** is built on the philosophy that prompts are the *code* of the Generative AI era. In a world where LLMs drive innovation, prompt engineering requires a specialized, structured workspace.
 
-- **Treat Prompts as Assets:** Instead of ephemeral text, prompts should be structured, versioned, and measurable.
-- **Democratize Quality:** By sharing and forking prompts, the community can collectively refine the "best" ways to interact with LLMs.
-- **Bridge the Gap:** Bringing together technical AI developers and creative prompt designers in a unified workspace.
+PromptForge addresses the fragmented landscape of AI prompting by providing:
+- **Prompts as Assets**: Moving beyond ephemeral text to structured, versioned, and measurable assets.
+- **Democratized Quality**: A community-driven platform where the best prompts are surfaced through sharing and iteration.
+- **Unified Workspace**: Bridging the gap between technical AI developers and creative prompt designers.
 
 ---
 
-## ✨ Design Inspirations
+## 🖼️ Visual Interface
 
-PromptForge aims for a **Premium, State-of-the-Art** aesthetic that feels as advanced as the AI it supports.
+### Homepage & Hero
+![Homepage](docs/screenshots/homepage.png)
+*The landing page features a premium 3D Spline robot and high-performance GSAP animations.*
 
-### Core Design Principles:
-- **Glassmorphism & Depth:** Using blurred surfaces and subtle shadows to create a modern, layered feel.
-- **Dynamic Interaction:** Leveraging **Framer Motion** and **GSAP** for micro-animations that make the UI feel alive.
-- **3D Immersion:** Integrating **Spline** 3D models and **Three.js** (React Three Fiber) to provide a rich, tactile experience.
-- **Glow & Vibrancy:** Custom HSL color palettes with neon accents against a sleek dark mode.
-- **Premium Typography:** Using modern, clean typefaces (e.g., Inter/Outfit) to ensure readability and a high-end look.
+### Prompt Discovery (Explore)
+![Explore Page](docs/screenshots/explore.png)
+*Discover prompts using advanced filtering, categories, and real-time search.*
+
+### Deep Dive: Prompt Details
+![Prompt Detail](docs/screenshots/prompt-detail.png)
+*Detailed view showing prompt content, version history, and community interactions.*
+
+### Categories & Navigation
+![Categories](docs/screenshots/categories.png)
+*Structured classification of prompts by use-case and AI model compatibility.*
+
+---
+
+## ✨ Key Features
+
+| Feature | Description |
+|---|---|
+| 🔍 **Prompt Discovery** | Browse curated prompts organized by categories, trending status, and community recommendations. |
+| 📤 **Structured Upload** | A multi-step wizard for prompt design, including meta-tags and variable placeholders. |
+| 🔀 **Fork & Iterate** | Fork any public prompt to create your own lineage and improve upon existing work. |
+| 🕒 **Version History** | Track every change with full versioning and side-by-side diff comparisons. |
+| 📊 **Analytics & Metrics** | Real-time tracking of views, forks, votes, and bookmark stats. |
+| 🏆 **Leaderboard** | Community reputation system surfacing the most impactful prompt engineers. |
+| 🔐 **Secure Auth** | Integrated Google OAuth and Email/Password authentication via Supabase. |
+| 🎨 **Premium UI/UX** | Glassmorphism, GSAP timeline animations, Spline 3D models, and smooth Lenis scrolling. |
 
 ---
 
 ## 🏗️ Tech Stack
 
 ### Frontend
-| Technology | Purpose |
-| :--- | :--- |
-| **Next.js 16** (App Router) | React framework with server components and file-based routing |
-| **React 19** | UI component library |
-| **TailwindCSS 4** | Utility-first styling with modern CSS features |
-| **shadcn/ui** | Accessible, beautifully designed component primitives |
-| **Framer Motion** | Declarative layout and scroll-linked animations |
-| **GSAP** | High-performance timeline-based animations |
-| **Spline** | Interactive 3D robot model on the landing page |
-| **Three.js / R3F** | 3D globe and WebGL background effects |
-| **Lenis** | Smooth, high-performance scrolling |
-| **Supabase Client** | Auth management and session handling |
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **UI Logic**: [React 19](https://react.dev/)
+- **Styling**: [TailwindCSS 4](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/) & [GSAP](https://gsap.com/)
+- **3D Graphics**: [Spline](https://spline.design/) & [Three.js (R3F)](https://docs.pmnd.rs/react-three-fiber/getting-started/introduction)
+- **Scrolling**: [Lenis](https://lenis.darkroom.engineering/)
+- **Auth Client**: [Supabase SSR](https://supabase.com/docs/guides/auth/server-side/nextjs)
 
 ### Backend
-| Technology | Purpose |
-| :--- | :--- |
-| **Express.js 5** | High-performance REST API framework |
-| **Prisma ORM** | Type-safe database access and migrations |
-| **PostgreSQL 15** | Reliable relational database storage |
-| **Supabase Auth** | Google OAuth + Email/Password JWT-based auth |
-| **Helmet / XSS-Clean** | Essential security headers and sanitization |
-| **Sentry** | Full-stack error tracking and performance monitoring |
+- **Server**: [Express.js 5](https://expressjs.com/)
+- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
+- **ORM**: [Prisma 6.19.2](https://www.prisma.io/)
+- **Database**: [PostgreSQL 15](https://www.postgresql.org/)
+- **Security**: [Helmet](https://helmetjs.github.io/), [XSS-Clean](https://www.npmjs.com/package/xss-clean)
+- **Monitoring**: [Sentry](https://sentry.io/)
 
 ---
 
-## 🏛️ Architecture
+## 🏛️ System Architecture
 
-PromptForge follows a layered architecture to ensure scalability and maintainability.
+PromptForge follows a **distributed three-tier architecture** that optimizes for high-bandwidth user interaction and low-latency API response.
 
+### Component Interaction
 ```mermaid
 graph TB
     subgraph Client["🖥️ Frontend — Next.js 16"]
-        A[App Router Pages] --> B[React Components]
+        A[Next.js App Router] --> B[React Components]
         B --> C[shadcn/ui + TailwindCSS]
-        B --> D[Framer Motion / GSAP / Spline]
+        B --> D[GSAP / Spline / Frame Motion]
         A --> E[Supabase Auth Client]
     end
 
     subgraph Server["⚙️ Backend — Express.js 5"]
-        F[Routes] --> G[Controllers]
-        G --> H[Services]
-        H --> I[Prisma ORM]
-        F --> J[Middleware]
-        J --> J1[Auth Guard]
-        J --> J2[Rate Limiter]
-        J --> J3[Security Hardening]
+        F[Request Router] --> G[Auth Guard Middleware]
+        G --> H[Controllers]
+        H --> I[Business Services]
+        I --> J[Prisma ORM Layer]
+        F --> K[Security Headers & Rate Limiting]
     end
 
-    subgraph Data["🗄️ Data Layer"]
-        K[(PostgreSQL 15)]
-        L[Supabase Auth]
+    subgraph Storage["🗄️ Persistence Layer"]
+        L[(PostgreSQL 15)]
+        M[Supabase Auth Engine]
     end
 
-    A -- "REST API" --> F
-    E -- "JWT" --> L
-    I --> K
-    J1 -- "Verify JWT" --> L
+    A -- "Stateful REST Requests" --> F
+    E -- "JWT Verification" --> M
+    J --> L
+    G -- "Token Check" --> M
 ```
 
----
-
-## 🔄 Working Flows (Prompt Lifecycle)
-
-1. **Discovery:** Users browse trending or category-filtered prompts using the high-performance search and recommendation engine.
-2. **Analysis:** Detailed prompt views show engagement metrics (views, forks, votes) and version history.
-3. **Refinement:** Users can **Fork** any public prompt, creating a copy they can modify and iterate on.
-4. **Creation:** A multi-step upload wizard allows for structured prompt design, including meta-tags and variable placeholders.
-5. **Versioning:** Every change is tracked. Users can revisit previous versions or see exactly what changed via the diff viewer.
+### Data Flow Overview
+1. **User Request**: The Next.js frontend initiates a request with a Supabase JWT.
+2. **Middleware**: Backend `authMiddleware` validates the token with Supabase.
+3. **Controller**: Decoupled handlers direct requests to specialized services.
+4. **ORM**: Prisma handles type-safe database access with PostgreSQL.
 
 ---
 
-## 📊 Database Design
+## 📊 Database Schema
 
-Our schema is designed for relational integrity and fast discovery.
+The database is built on **relational integrity** and **low-latency analytics tracking**.
 
-### Core Data Structures:
-- **`User`**: Tracks reputation, profile details, and authentication linking.
-- **`Prompt`**: The central entity, containing content, metadata, and linkage to its "Parent" (for forking lineage).
-- **`PromptVersion`**: A snapshot of a prompt at a specific point in time.
-- **`Analytics`**: Separated metrics for high-frequency updates without locking core tables.
-- **`Vote` / `Bookmark` / `Fork`**: Relational tables managing community interaction.
-
+### Entity Relationship Diagram
 ```mermaid
 erDiagram
-    User ||--o{ Prompt : creates
-    User ||--o{ Vote : casts
-    User ||--o{ Bookmark : saves
-    Prompt ||--o{ PromptVersion : "has versions"
-    Prompt ||--o{ Vote : receives
-    Prompt ||--o{ Bookmark : "bookmarked by"
-    Prompt ||--|| PromptAnalytics : tracks
-    Prompt ||--o{ Prompt : "forked from"
+    User ||--o{ Prompt : "authors"
+    User ||--o{ Vote : "casts"
+    User ||--o{ Bookmark : "saves"
+    Prompt ||--o{ PromptVersion : "manages history"
+    Prompt ||--o{ Vote : "receives"
+    Prompt ||--o{ Bookmark : "bookmarked in"
+    Prompt ||--|| PromptAnalytics : "cached stats"
+    Prompt ||--o{ Prompt : "forked lineage"
+```
+
+### Core Entities
+
+| Table | Field | Type | Description |
+|---|---|---|---|
+| **User** | `id`, `username`, `email` | String | Core identity profile. |
+| | `reputation` | Integer | Community impact score. |
+| **Prompt** | `id`, `title`, `content` | String | Central prompt asset. |
+| | `parentPromptId` | String? | Reference for fork lineage. |
+| **PromptVersion** | `id`, `versionNumber` | UUID/Int | Immutable snapshot of contents. |
+| **PromptAnalytics**| `views`, `forks`, `votes` | Integer | Denormalized stats for performance. |
+
+---
+
+## 🔌 API Documentation
+
+Stateless REST API endpoints exposed under `/api/*`.
+
+### Prompt Endpoints
+| Method | Endpoint | Description | Auth Required |
+|---|---|---|---|
+| `GET` | `/api/prompts` | List all public prompts. | No |
+| `GET` | `/api/prompts/:id` | Fetch specific prompt details. | No |
+| `POST` | `/api/prompts` | Create a new prompt asset. | Yes |
+| `POST` | `/api/prompts/:id/vote`| Cast an upvote/downvote. | Yes |
+| `PATCH`| `/api/prompts/:id` | Update existing prompt. | Yes |
+
+### Discovery & Trends
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/discovery/trending` | List trending prompts. |
+| `GET` | `/api/discovery/popular` | List all-time popular prompts. |
+| `GET` | `/api/search` | Search prompts via query. |
+
+---
+
+## 📁 Project Structure
+
+```bash
+prompt-forge/
+├── frontend/                   # Next.js 16 Web Application
+│   ├── src/app/                # App Router pages and layouts
+│   ├── src/components/         # UI components (shadcn/ui)
+│   ├── public/                 # Static assets & 3D models
+│   └── package.json            # Frontend config
+│
+├── backend/                    # Express.js 5 REST API
+│   ├── src/routes/             # API Router definitions
+│   ├── src/controllers/        # Request handlers
+│   ├── src/services/           # Business logic layer
+│   ├── src/middleware/         # Auth, Rate limiting, Security
+│   └── package.json            # Backend config
+│
+├── database/                   # Schema & Migrations
+│   └── schema.prisma           # Prisma Data Model
+│
+├── docs/                       # Project Documentation
+│   └── screenshots/            # Visual documentation assets
+└── README.md                   # Main documentation
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Installation & Setup
 
-### Prerequisites
-- **Node.js** ≥ 18
-- **PostgreSQL** 15+ (Local or via Docker)
-- **Supabase** Project (for Auth)
+### 1. Prerequisites
+- **Node.js**: v18.0.0+
+- **PostgreSQL**: v15.0+
+- **Supabase Account**: For Authentication
 
-### Setup
-1. **Clone & Install:**
-   ```bash
-   git clone https://github.com/Vishallakshmikanthan/prompt-forge.git
-   npm install # in both frontend and backend directories
-   ```
-2. **Environment:**
-   Create a `.env` file in the root using `.env.example` as a template.
-3. **Database:**
-   ```bash
-   cd database
-   npx prisma generate
-   npx prisma migrate dev
-   ```
-4. **Run:**
-   - **Backend:** `npm run dev` (Port 4000)
-   - **Frontend:** `npm run dev` (Port 3000)
+### 2. Environment Configuration
+Create `.env` in the root:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/db"
+SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_ANON_KEY="your-anon-key"
+```
+
+### 3. Execution
+```bash
+# Install
+cd frontend && npm install
+cd ../backend && npm install
+
+# Initialize DB
+cd backend && npx prisma generate && npx prisma migrate dev
+
+# Run
+npm run dev # In both directories
+```
 
 ---
 
-<p align="center">
-  Built with ❤️ by <a href="https://github.com/Vishallakshmikanthan">Vishallakshmikanthan</a>
-</p>
+## 🔭 Future Improvements
+- **AI Scoring**: Evaluation of prompt quality via LLM API.
+- **WebSocket Sync**: Real-time collaborative prompt editing.
+- **Prompt Playground**: Test prompts directly against GPT-4/Claude in-browser.
+- **CLI Tool**: `promptforge` command-line utility.
+
+---
+
+## 🤝 Contributing
+1. Fork the Project
+2. Feature Branch (`git checkout -b feature/NewFeature`)
+3. Commit (`git commit -m 'Add NewFeature'`)
+4. Push (`git push origin feature/NewFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+This project currently does not have an open-source license. Please contact the author for permissions regarding commercial use.
+
+---
+
+<div align="center">
+  Built with ❤️ by [Vishallakshmikanthan](https://github.com/Vishallakshmikanthan)
+</div>
