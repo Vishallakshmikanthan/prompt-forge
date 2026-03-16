@@ -1,69 +1,13 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://prompt-forge-two-indol.vercel.app'
-  const lastModified = new Date()
-
   return [
-    {
-      url: baseUrl,
-      lastModified,
-      changeFrequency: 'daily',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/explore`,
-      lastModified,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/categories`,
-      lastModified,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/trending`,
-      lastModified,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/leaderboard`,
-      lastModified,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/community`,
-      lastModified,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/documentation`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/api-reference`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/privacy-policy`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/terms-of-service`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.3,
-    },
-  ]
+    { url: "https://prompt-forge-two-indol.vercel.app", lastModified: new Date(), changeFrequency: "daily", priority: 1 },
+    { url: "https://prompt-forge-two-indol.vercel.app/explore", lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
+    { url: "https://prompt-forge-two-indol.vercel.app/categories", lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
+    { url: "https://prompt-forge-two-indol.vercel.app/trending", lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
+    { url: "https://prompt-forge-two-indol.vercel.app/leaderboard", lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+    { url: "https://prompt-forge-two-indol.vercel.app/community", lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+    { url: "https://prompt-forge-two-indol.vercel.app/documentation", lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+  ];
 }
