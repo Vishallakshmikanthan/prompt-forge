@@ -2,12 +2,14 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public", "auth"]
 }
 
 model User {
@@ -33,6 +35,7 @@ model User {
   forks         PromptFork[]
 
   @@map("users")
+  @@schema("public")
 }
 
 model Prompt {
@@ -62,6 +65,7 @@ model Prompt {
   @@index([category])
   @@index([moderationStatus])
   @@index([createdAt])
+  @@schema("public")
 }
 
 model PromptAnalytics {
@@ -73,6 +77,8 @@ model PromptAnalytics {
   forks     Int      @default(0)
   bookmarks Int      @default(0)
   updatedAt DateTime @default(now()) @updatedAt
+
+  @@schema("public")
 }
 
 model PromptVersion {
@@ -84,6 +90,7 @@ model PromptVersion {
   prompt   Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
 
   @@index([promptId])
+  @@schema("public")
 }
 
 model Vote {
@@ -121,6 +128,7 @@ model Notification {
   createdAt DateTime @default(now())
 
   @@index([userId])
+  @@schema("public")
 }
 
 model Discussion {
@@ -139,6 +147,7 @@ model Discussion {
 
   @@index([userId])
   @@index([category])
+  @@schema("public")
 }
 
 model PromptFork {
@@ -151,4 +160,5 @@ model PromptFork {
 
   @@index([promptId])
   @@index([userId])
+  @@schema("public")
 }
