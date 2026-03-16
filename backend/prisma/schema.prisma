@@ -104,6 +104,7 @@ model Vote {
   @@unique([userId, promptId])
   @@index([userId])
   @@index([promptId])
+  @@schema("public")
 }
 
 model Bookmark {
@@ -116,6 +117,7 @@ model Bookmark {
   @@unique([userId, promptId])
   @@index([userId])
   @@index([promptId])
+  @@schema("public")
 }
 
 model Notification {
