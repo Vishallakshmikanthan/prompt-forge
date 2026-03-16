@@ -69,6 +69,7 @@ export function PromptForm({ onFormChange, initialData }: PromptFormProps) {
 
     const handlePublish = (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
         // Run the full 4-step pipeline
         const result = runFullValidation(formData);
@@ -241,17 +242,26 @@ export function PromptForm({ onFormChange, initialData }: PromptFormProps) {
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 md:flex-none"
+                    className="flex-1 md:flex-none min-h-11 px-4"
                 >
-                    <ShieldCheck className="w-4 h-4 mr-2" />
-                    {isSubmitting ? "Publishing..." : "Validate & Publish"}
+                    {isSubmitting ? (
+                        <>
+                            <span className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-2" />
+                            Publishing...
+                        </>
+                    ) : (
+                        <>
+                            <ShieldCheck className="w-4 h-4 mr-2" />
+                            Validate & Publish
+                        </>
+                    )}
                 </Button>
                 <Button
                     type="button"
                     variant="outline"
                     onClick={handleSaveDraft}
                     disabled={isSubmitting}
-                    className="flex-1 md:flex-none"
+                    className="flex-1 md:flex-none min-h-11 px-4"
                 >
                     <Save className="w-4 h-4 mr-2" />
                     Save as Draft

@@ -30,7 +30,7 @@ export function HowItWorks() {
     const [hoveredNode, setHoveredNode] = useState<number | null>(null);
 
     return (
-        <section className="py-[120px] px-[32px] relative overflow-hidden bg-background">
+        <section className="py-16 md:py-[120px] px-4 md:px-[32px] relative overflow-hidden bg-background">
             <div className="max-w-[1200px] mx-auto text-center relative z-10">
                 {/* Background ambient glow */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[300px] bg-purple-500/5 blur-[120px] pointer-events-none rounded-full" />
@@ -40,12 +40,12 @@ export function HowItWorks() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="mb-[100px]"
+                    className="mb-12 md:mb-[100px]"
                 >
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 font-display">
+                    <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-4 font-display">
                         How <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-500">PromptForge</span> Works
                     </h2>
-                    <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                    <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto">
                         A seamless experience designed to boost your productivity with AI.
                     </p>
                 </motion.div>
@@ -67,7 +67,7 @@ export function HowItWorks() {
                                 }}
                                 onHoverStart={() => setHoveredNode(index)}
                                 onHoverEnd={() => setHoveredNode(null)}
-                                className="flex flex-col items-center text-center w-[220px] md:w-[260px] shrink-0 group cursor-pointer relative"
+                                className="flex flex-col items-center text-center w-full max-w-[260px] md:w-[260px] shrink-0 group cursor-pointer relative"
                             >
                                 {/* Glowing backdrop for node */}
                                 <motion.div
@@ -110,14 +110,14 @@ export function HowItWorks() {
 
                                 <motion.h3
                                     className={cn(
-                                        "text-2xl font-bold mb-3 font-display transition-colors duration-500",
+                                        "text-xl md:text-2xl font-bold mb-3 font-display transition-colors duration-500",
                                         hoveredNode === index ? "text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-purple-500" : "text-white"
                                     )}
                                 >
                                     {step.title}
                                 </motion.h3>
 
-                                <p className="text-zinc-400 text-[15px] leading-[1.6] max-w-[240px] transition-colors duration-500 group-hover:text-zinc-300">
+                                <p className="text-zinc-400 text-sm md:text-[15px] leading-[1.6] max-w-[240px] transition-colors duration-500 group-hover:text-zinc-300">
                                     {step.description}
                                 </p>
                             </motion.div>

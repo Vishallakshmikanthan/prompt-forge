@@ -19,9 +19,39 @@ const fontDisplay = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "PromptForge – Discover, Share & Version AI Prompts",
-  description: "The premier platform for developers to browse, upload, fork, and manage structured AI prompts.",
+  description: "The ultimate platform for developers to discover, test, and share high-performance AI prompts. Elevate your LLM workflows with PromptForge.",
+  openGraph: {
+    title: "PromptForge",
+    description: "Discover, share & version AI prompts like code.",
+    url: "https://prompt-forge-two-indol.vercel.app",
+    siteName: "PromptForge",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PromptForge",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PromptForge",
+    description: "Discover, share & version AI prompts like code.",
+    images: ["/og-image.png"],
+  },
   icons: {
     icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
+  verification: {
+    google: "googlef0018186a4f22908",
+    other: {
+      "msvalidate.01": "REPLACE_WITH_BING_VERIFICATION_CODE",
+    },
   },
 };
 

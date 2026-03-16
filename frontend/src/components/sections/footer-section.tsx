@@ -11,7 +11,7 @@ export function FooterSection() {
                             <Terminal className="w-6 h-6 text-primary" />
                             <span className="text-xl font-bold tracking-tight">PromptForge</span>
                         </Link>
-                        <p className="text-muted-foreground max-w-sm">
+                        <p className="text-sm md:text-base text-muted-foreground max-w-sm">
                             The premier platform for software engineers and designers to discover, share, and version structured AI prompts.
                         </p>
                     </div>

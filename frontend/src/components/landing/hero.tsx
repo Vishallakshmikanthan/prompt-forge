@@ -55,13 +55,13 @@ export function Hero() {
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
                 >
                     <Link href="/categories">
-                        <Button size="lg" className="h-14 px-8 text-base font-semibold group rounded-full bg-accent hover:bg-accent/90 shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] transition-all w-full sm:w-auto">
+                        <Button size="lg" className="h-14 min-h-11 px-8 text-base font-semibold group rounded-full bg-accent hover:bg-accent/90 shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] transition-all w-full sm:w-auto">
                             Explore Categories
                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 group-hover:scale-110 transition-all" />
                         </Button>
                     </Link>
                     <Link href="/upload">
-                        <Button size="lg" variant="outline" className="h-14 px-8 text-base font-semibold rounded-full border-border hover:bg-muted backdrop-blur-sm transition-all w-full sm:w-auto group">
+                        <Button size="lg" variant="outline" className="h-14 min-h-11 px-8 text-base font-semibold rounded-full border-border hover:bg-muted backdrop-blur-sm transition-all w-full sm:w-auto group">
                             Upload Prompt
                         </Button>
                     </Link>

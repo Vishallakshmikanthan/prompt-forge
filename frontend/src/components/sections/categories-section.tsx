@@ -87,6 +87,16 @@ const features = [
 export function CategoriesSection() {
     const robotRef = useRef<InteractiveRobotRef>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const [isMobile, setIsMobile] = React.useState(false);
+
+    React.useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const handleBubbleHover = (e: React.MouseEvent) => {
         if (!containerRef.current || !robotRef.current) return;
@@ -111,12 +121,12 @@ export function CategoriesSection() {
     };
 
     return (
-        <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center bg-black overflow-hidden border-y border-zinc-900 pt-20 pb-12">
+        <section className="relative min-h-[600px] md:min-h-[calc(100vh-4rem)] flex items-center justify-center bg-black overflow-hidden border-y border-zinc-900 pt-10 md:pt-20 pb-8 md:pb-12">
             <ShaderAnimation />
 
-            <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 h-full flex flex-col items-center">
+            <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-6 h-full flex flex-col items-center">
 
-                {/* Hero Title - Unchanged position & behavior */}
+                {/* Hero Title */}
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -126,10 +136,10 @@ export function CategoriesSection() {
                     <span className="px-2 py-0.5 rounded-full bg-zinc-800 border border-zinc-700 text-[8px] font-bold uppercase tracking-widest text-zinc-500">
                         PromptForge
                     </span>
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black tracking-tight text-white leading-[1.1]">
+                    <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.1]">
                         Your AI Prompt Companion
                     </h2>
-                    <p className="text-xs md:text-sm text-zinc-400 max-w-md mx-auto leading-relaxed font-medium">
+                    <p className="text-[10px] sm:text-xs md:text-sm text-zinc-400 max-w-sm md:max-w-md mx-auto leading-relaxed font-medium">
                         PromptForge helps developers discover, share and improve AI prompts used in real-world applications.
                     </p>
                 </motion.div>
@@ -137,18 +147,20 @@ export function CategoriesSection() {
                 {/* U-Shaped Interactive Area */}
                 <div
                     ref={containerRef}
-                    className="relative w-full max-w-5xl mt-[80px] sm:mt-[100px] h-[400px] md:h-[500px] lg:h-[600px] flex items-center justify-center"
+                    className="relative w-full max-w-5xl mt-10 md:mt-24 h-[300px] md:h-[500px] lg:h-[600px] flex items-center justify-center"
                 >
                     {/* Centered Robot */}
-                    <div className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none">
-                        <div className="w-[320px] h-[320px] md:w-[420px] md:h-[420px] lg:w-[520px] lg:h-[520px] pointer-events-auto">
-                            <InteractiveRobotSpline
-                                ref={robotRef}
-                                scene={ROBOT_SCENE_URL}
-                                className="w-full h-full"
-                            />
+                    {!isMobile && (
+                        <div className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none hidden md:flex">
+                            <div className="w-[320px] h-[320px] md:w-[420px] md:h-[420px] lg:w-[520px] lg:h-[520px] pointer-events-auto">
+                                <InteractiveRobotSpline
+                                    ref={robotRef}
+                                    scene={ROBOT_SCENE_URL}
+                                    className="w-full h-full"
+                                />
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Surrounding Interactive Bubbles */}
                     {features.map((feature) => (
@@ -161,17 +173,24 @@ export function CategoriesSection() {
                             onMouseEnter={handleBubbleHover}
                             onMouseLeave={() => robotRef.current?.resetDirection()}
                             className={`absolute flex flex-col items-center justify-center cursor-pointer 
-                                w-[90px] h-[90px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px] 
+                                w-[75px] h-[75px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px] 
                                 rounded-full bg-[rgba(25,25,30,0.85)] backdrop-blur-md border border-white/10 
                                 transition-all duration-300 hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] hover:border-indigo-400/50
                                 group z-10 ${feature.mobilePos} ${feature.tabletPos} ${feature.desktopPos}`}
                         >
-                            <feature.icon className="w-5 h-5 md:w-6 md:h-6 lg:w-8 lg:h-8 mb-1 md:mb-2 text-indigo-400 group-hover:text-indigo-300 transition-colors drop-shadow-md" />
-                            <span className="text-[9px] md:text-[10px] lg:text-xs font-semibold text-center leading-tight text-white/90 px-2 lg:px-4 group-hover:text-white transition-colors">
+                            <feature.icon className="w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8 mb-1 md:mb-2 text-indigo-400 group-hover:text-indigo-300 transition-colors drop-shadow-md" />
+                            <span className="text-[8px] md:text-[10px] lg:text-xs font-semibold text-center leading-tight text-white/90 px-2 lg:px-4 group-hover:text-white transition-colors">
                                 {feature.label}
                             </span>
                         </motion.div>
                     ))}
+                    
+                    {isMobile && (
+                         <div className="md:hidden flex flex-col items-center justify-center text-zinc-500 gap-2 mt-8">
+                             <Zap className="w-8 h-8 opacity-20" />
+                             <span className="text-[10px] uppercase tracking-widest opacity-50">Interactive Experience on Desktop</span>
+                         </div>
+                    )}
                 </div>
             </div>
         </section>

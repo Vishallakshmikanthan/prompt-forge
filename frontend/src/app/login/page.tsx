@@ -122,8 +122,19 @@ export default function LoginPage() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
-                        <Button type="submit" className="w-full h-12 bg-accent hover:bg-accent/90 text-primary-foreground font-bold shadow-lg hover:shadow-accent/25 transition-all">
-                            Sign In with Email
+                        <Button 
+                            type="submit" 
+                            disabled={isEmailLoginLoading}
+                            className="w-full h-12 min-h-11 px-4 bg-accent hover:bg-accent/90 text-primary-foreground font-bold shadow-lg hover:shadow-accent/25 transition-all"
+                        >
+                            {isEmailLoginLoading ? (
+                                <span className="flex items-center gap-2">
+                                    <span className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                                    Signing in...
+                                </span>
+                            ) : (
+                                "Sign In with Email"
+                            )}
                         </Button>
                     </form>
                 </div>

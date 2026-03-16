@@ -24,17 +24,18 @@ export function CtaSection() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <Link href="/categories">
-                        <Button size="lg" className="h-14 px-8 text-lg font-semibold rounded-full group">
+                        <Button size="lg" className="h-14 min-h-11 px-8 text-lg font-semibold rounded-full group">
                             Browse Categories
                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </Link>
                     <Link href={user ? "/upload" : "/login"}>
-                        <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-semibold rounded-full bg-background hover:bg-muted transition-colors">
+                        <Button size="lg" variant="outline" className="h-14 min-h-11 px-8 text-lg font-semibold rounded-full bg-background hover:bg-muted transition-colors">
                             Upload Prompt
                         </Button>
                     </Link>
                 </div>
+
             </div>
         </section>
     );

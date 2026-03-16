@@ -104,29 +104,29 @@ function Background() {
 
 export function Features() {
     return (
-        <section className="relative py-32 bg-zinc-950 overflow-hidden border-y border-zinc-900/30">
+        <section className="relative py-16 md:py-32 bg-zinc-950 overflow-hidden border-y border-zinc-900/30">
             <div className="absolute inset-0 pointer-events-none z-0 opacity-30 md:opacity-40">
                 <SpiralAnimation />
             </div>
             <Background />
 
-            <div className="container mx-auto px-6 relative z-10">
+            <div className="container mx-auto px-4 md:px-6 relative z-10">
 
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-center mb-24"
+                    className="text-center mb-12 md:mb-24"
                 >
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-6">
                         <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
                         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400">Core Engine</span>
                     </div>
-                    <h2 className="text-5xl md:text-6xl font-bold text-white tracking-tight mb-6">
+                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-6">
                         Platform <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Features</span>
                     </h2>
-                    <p className="mt-4 text-zinc-400 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
+                    <p className="mt-4 text-zinc-400 max-w-2xl mx-auto text-base md:text-lg lg:text-xl leading-relaxed">
                         Everything you need to discover, use, and share high-quality AI prompts
                         in a structured, professional environment.
                     </p>
@@ -140,16 +140,16 @@ export function Features() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/50 rounded-3xl p-10 text-center hover:-translate-y-3 hover:border-cyan-500/40 hover:shadow-[0_20px_50px_rgba(6,182,212,0.15)] transition-all duration-500 group relative overflow-hidden"
+                        className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/50 rounded-3xl p-6 md:p-10 text-center hover:-translate-y-3 hover:border-cyan-500/40 hover:shadow-[0_20px_50px_rgba(6,182,212,0.15)] transition-all duration-500 group relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="w-16 h-16 mx-auto mb-8 bg-zinc-800/80 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:bg-cyan-500/20 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all duration-300 relative z-10">
                             <Search className="text-zinc-400 group-hover:text-cyan-400 transition-colors" size={28} />
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-4 relative z-10">
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-4 relative z-10">
                             Discover Proven Prompts
                         </h3>
-                        <p className="text-zinc-400 mb-8 leading-relaxed text-base relative z-10">
+                        <p className="text-zinc-400 mb-8 leading-relaxed text-sm md:text-base relative z-10">
                             Browse curated prompts used by developers to build real-world AI applications.
                         </p>
                         <Link href="/documentation/discover-prompts" className="flex items-center justify-center gap-2 text-sm font-bold text-zinc-500 group-hover:text-cyan-400 transition-colors cursor-pointer relative z-10 group/link">
@@ -167,16 +167,16 @@ export function Features() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/50 rounded-3xl p-10 text-center hover:-translate-y-3 hover:border-purple-500/40 hover:shadow-[0_20px_50px_rgba(168,85,247,0.15)] transition-all duration-500 group relative overflow-hidden"
+                        className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/50 rounded-3xl p-6 md:p-10 text-center hover:-translate-y-3 hover:border-purple-500/40 hover:shadow-[0_20px_50px_rgba(168,85,247,0.15)] transition-all duration-500 group relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="w-16 h-16 mx-auto mb-8 bg-zinc-800/80 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:bg-purple-500/20 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all duration-300 relative z-10">
                             <Layout className="text-zinc-400 group-hover:text-purple-400 transition-colors" size={28} />
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-4 relative z-10">
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-4 relative z-10">
                             Structured Design
                         </h3>
-                        <p className="text-zinc-400 mb-8 leading-relaxed text-base relative z-10">
+                        <p className="text-zinc-400 mb-8 leading-relaxed text-sm md:text-base relative z-10">
                             Every prompt follows a structured format ensuring complete reproducibility.
                         </p>
                         <Link href="/documentation/structured-design" className="flex items-center justify-center gap-2 text-sm font-bold text-zinc-500 group-hover:text-purple-400 transition-colors cursor-pointer relative z-10 group/link">
@@ -194,16 +194,16 @@ export function Features() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/50 rounded-3xl p-10 text-center hover:-translate-y-3 hover:border-indigo-500/40 hover:shadow-[0_20px_50px_rgba(99,102,241,0.15)] transition-all duration-500 group relative overflow-hidden"
+                        className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/50 rounded-3xl p-6 md:p-10 text-center hover:-translate-y-3 hover:border-indigo-500/40 hover:shadow-[0_20px_50px_rgba(99,102,241,0.15)] transition-all duration-500 group relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="w-16 h-16 mx-auto mb-8 bg-zinc-800/80 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:bg-indigo-500/20 group-hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all duration-300 relative z-10">
                             <Users className="text-zinc-400 group-hover:text-indigo-400 transition-colors" size={28} />
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-4 relative z-10">
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-4 relative z-10">
                             Community Driven
                         </h3>
-                        <p className="text-zinc-400 mb-8 leading-relaxed text-base relative z-10">
+                        <p className="text-zinc-400 mb-8 leading-relaxed text-sm md:text-base relative z-10">
                             Learn from prompts shared by developers, researchers, and AI builders.
                         </p>
                         <Link href="/community" className="flex items-center justify-center gap-2 text-sm font-bold text-zinc-500 group-hover:text-indigo-400 transition-colors cursor-pointer relative z-10 group/link">

@@ -29,9 +29,11 @@ export default function SignupPage() {
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
         
         if (formData.password !== formData.confirmPassword) {
             toast.error("Passwords do not match");
+            setIsLoading(false);
             return;
         }
 
@@ -40,6 +42,7 @@ export default function SignupPage() {
             setIsLoading(false);
             return;
         }
+
 
         try {
             const { email, password, username } = formData;
@@ -162,8 +165,19 @@ export default function SignupPage() {
                                 />
                             </div>
                         </div>
-                        <Button type="submit" className="w-full h-12 bg-accent hover:bg-accent/90 text-primary-foreground font-bold shadow-lg hover:shadow-accent/25 transition-all mt-2">
-                            Create Account
+                        <Button 
+                            type="submit" 
+                            disabled={isSignupLoading}
+                            className="w-full h-12 min-h-11 px-4 bg-accent hover:bg-accent/90 text-primary-foreground font-bold shadow-lg hover:shadow-accent/25 transition-all mt-2"
+                        >
+                            {isSignupLoading ? (
+                                <span className="flex items-center gap-2">
+                                    <span className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                                    Creating Account...
+                                </span>
+                            ) : (
+                                "Create Account"
+                            )}
                         </Button>
                     </form>
                 </div>

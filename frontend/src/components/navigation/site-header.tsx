@@ -14,16 +14,78 @@ import { useAuth } from "@/components/auth/auth-provider"
 
 import Image from "next/image"
 
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+import { Menu } from "lucide-react"
+
 export function SiteHeader() {
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false)
     const { user, isLoading } = useAuth()
+
+    const navLinks = [
+        { href: "/explore", label: "Explore" },
+        { href: "/community", label: "Community" },
+        { href: "/documentation", label: "Docs" },
+    ]
 
     return (
         <>
             <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
                 <div className="container flex h-16 items-center px-4 md:px-8 max-w-7xl mx-auto space-x-4 sm:space-x-0">
                     <div className="flex items-center gap-2 md:gap-4 flex-1">
-                        <SidebarToggle onToggle={() => setIsSidebarOpen(true)} />
+                        <div className="lg:hidden">
+                            <Sheet>
+                                <SheetTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="md:hidden">
+                                        <Menu className="h-5 w-5" />
+                                        <span className="sr-only">Toggle menu</span>
+                                    </Button>
+                                </SheetTrigger>
+                                <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                                    <SheetHeader>
+                                        <SheetTitle className="flex items-center gap-2">
+                                            <Image
+                                                src="/logo.png"
+                                                alt="Logo"
+                                                width={32}
+                                                height={32}
+                                                className="rounded-lg"
+                                            />
+                                            PromptForge
+                                        </SheetTitle>
+                                    </SheetHeader>
+                                    <div className="flex flex-col gap-4 py-8">
+                                        {navLinks.map((link) => (
+                                            <Link
+                                                key={link.href}
+                                                href={link.href}
+                                                className="text-lg font-semibold text-muted-foreground hover:text-accent transition-colors"
+                                            >
+                                                {link.label}
+                                            </Link>
+                                        ))}
+                                        <hr className="my-4 border-border" />
+                                        {!isLoading && !user && (
+                                            <div className="flex flex-col gap-3">
+                                                <Link href="/login" className="w-full">
+                                                    <Button variant="outline" className="w-full">Login</Button>
+                                                </Link>
+                                                <Link href="/signup" className="w-full">
+                                                    <Button className="w-full bg-accent text-primary-foreground">Sign Up</Button>
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
+                                </SheetContent>
+                            </Sheet>
+                        </div>
+
+                        <SidebarToggle onToggle={() => setIsSidebarOpen(true)} className="hidden md:flex lg:hidden" />
 
                         <Link href="/" className="flex items-center space-x-2 mr-6">
                             <Image
@@ -48,7 +110,7 @@ export function SiteHeader() {
                                     window.location.href = `/search?q=${encodeURIComponent(query)}`;
                                 }
                             }}
-                            className="w-80 px-4 py-2 rounded-xl border border-border hidden md:flex items-center relative group bg-muted/40 transition-all duration-300 hover:bg-muted/70 focus-within:ring-2 focus-within:ring-accent focus-within:border-accent"
+                            className="w-full max-w-sm px-4 py-2 rounded-xl border border-border hidden md:flex items-center relative group bg-muted/40 transition-all duration-300 hover:bg-muted/70 focus-within:ring-2 focus-within:ring-accent focus-within:border-accent"
                         >
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-accent transition-colors" />
                             <input
@@ -65,15 +127,11 @@ export function SiteHeader() {
                         </form>
 
                         <nav className="hidden lg:flex items-center space-x-6 mr-4">
-                            <Link href="/explore" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors">
-                                Explore
-                            </Link>
-                            <Link href="/community" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors">
-                                Community
-                            </Link>
-                            <Link href="/documentation" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors">
-                                Docs
-                            </Link>
+                            {navLinks.map((link) => (
+                                <Link key={link.href} href={link.href} className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors">
+                                    {link.label}
+                                </Link>
+                            ))}
                         </nav>
 
                         <nav className="flex items-center space-x-3">
@@ -90,7 +148,7 @@ export function SiteHeader() {
                                         <UserAvatar />
                                     </div>
                                 ) : (
-                                    <div className="flex items-center gap-3">
+                                    <div className="hidden md:flex items-center gap-3">
                                         <Link href="/login">
                                             <Button variant="ghost" className="text-sm font-medium hover:text-accent transition-colors">
                                                 Login
