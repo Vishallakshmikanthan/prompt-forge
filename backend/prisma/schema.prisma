@@ -31,6 +31,8 @@ model User {
   notifications Notification[]
   discussions   Discussion[]
   forks         PromptFork[]
+  comments      Comment[]
+  commentVotes  CommentVote[]
 
   @@map("users")
 }
@@ -58,10 +60,47 @@ model Prompt {
   bookmarks Bookmark[]
   analytics PromptAnalytics?
   forkEvents PromptFork[] @relation("PromptForks")
+  comments  Comment[]
 
   @@index([category])
   @@index([moderationStatus])
   @@index([createdAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  promptId  String
+  authorId  String
+  parentId  String?
+  upvotes   Int      @default(0)
+  createdAt DateTime @default(now())
+
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  author User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[] @relation("CommentReplies")
+  votes   CommentVote[]
+
+  @@index([promptId])
+  @@index([authorId])
+  @@index([parentId])
+  @@index([createdAt])
+}
+
+model CommentVote {
+  id        String   @id @default(cuid())
+  userId    String
+  commentId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
+  @@index([userId])
+  @@index([commentId])
 }
 
 model PromptAnalytics {

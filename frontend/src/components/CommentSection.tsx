@@ -41,7 +41,7 @@ export default function CommentSection({ promptId }: CommentSectionProps) {
     const [replyContent, setReplyContent] = useState("");
 
     const authHeaders = useMemo<Record<string, string>>(() => {
-        if (!user?.id) return {};
+        if (!user?.id) return {} as Record<string, string>;
         return { "user-id": user.id };
     }, [user?.id]);
 
