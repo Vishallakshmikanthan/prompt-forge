@@ -461,3 +461,99 @@ export const getActivityTimeline = async (identifier: string) => {
 
     return events.slice(0, 20);
 };
+
+// ── Follow system ─────────────────────────────────────────────────────────────
+
+export const toggleFollow = async (followerId: string, followingId: string) => {
+    const existing = await prisma.follow.findUnique({
+        where: { followerId_followingId: { followerId, followingId } },
+    });
+
+    if (existing) {
+        await prisma.follow.delete({
+            where: { followerId_followingId: { followerId, followingId } },
+        });
+        const followerCount = await prisma.follow.count({ where: { followingId } });
+        return { following: false, followerCount };
+    }
+
+    await prisma.follow.create({ data: { followerId, followingId } });
+    const followerCount = await prisma.follow.count({ where: { followingId } });
+    return { following: true, followerCount };
+};
+
+export const getFollowStatus = async (currentUserId: string | undefined, targetUserId: string) => {
+    const followerCount = await prisma.follow.count({ where: { followingId: targetUserId } });
+    const followingCount = await prisma.follow.count({ where: { followerId: targetUserId } });
+
+    let following = false;
+    if (currentUserId) {
+        const record = await prisma.follow.findUnique({
+            where: { followerId_followingId: { followerId: currentUserId, followingId: targetUserId } },
+        });
+        following = !!record;
+    }
+
+    return { following, followerCount, followingCount };
+};
+
+// ── Activity feed ─────────────────────────────────────────────────────────────
+
+export const getFeed = async (userId: string, limit: number, offset: number) => {
+    const following = await prisma.follow.findMany({
+        where: { followerId: userId },
+        select: { followingId: true },
+    });
+
+    const followingIds = following.map((f: { followingId: string }) => f.followingId);
+
+    if (followingIds.length === 0) {
+        return { prompts: [], total: 0, hasMore: false };
+    }
+
+    const [prompts, total] = await Promise.all([
+        prisma.prompt.findMany({
+            where: { authorId: { in: followingIds } },
+            orderBy: { createdAt: 'desc' },
+            take: limit,
+            skip: offset,
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                category: true,
+                aiModel: true,
+                tags: true,
+                score: true,
+                createdAt: true,
+                author: { select: { username: true, avatarUrl: true } },
+                _count: { select: { votes: true, bookmarks: true, forkedPrompts: true } },
+            },
+        }),
+        prisma.prompt.count({ where: { authorId: { in: followingIds } } }),
+    ]);
+
+    return { prompts, total, hasMore: offset + limit < total };
+};
+
+// ── Update public profile ─────────────────────────────────────────────────────
+
+export const updatePublicProfile = async (
+    userId: string,
+    data: { bio?: string; twitterUrl?: string; githubUrl?: string; website?: string }
+) => {
+    const updated = await prisma.user.update({
+        where: { id: userId },
+        data: {
+            ...(data.bio !== undefined && { bio: data.bio }),
+            ...(data.twitterUrl !== undefined && { twitterUrl: data.twitterUrl }),
+            ...(data.githubUrl !== undefined && { githubUrl: data.githubUrl }),
+            ...(data.website !== undefined && { website: data.website }),
+        },
+        select: {
+            id: true, username: true, bio: true,
+            twitterUrl: true, githubUrl: true, website: true,
+        },
+    });
+    return updated;
+};

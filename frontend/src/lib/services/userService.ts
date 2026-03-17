@@ -8,6 +8,7 @@ export interface UserProfile {
     bio: string | null;
     avatarUrl: string | null;
     githubUrl: string | null;
+    twitterUrl: string | null;
     website: string | null;
     createdAt: string;
     _count: {
@@ -129,6 +130,34 @@ export const userService = {
     async getOwnProfile(userId: string): Promise<{ user: any; stats: any }> {
         return fetchApi<{ user: any; stats: any }>(`/profile`, {
             headers: { 'user-id': userId }
+        });
+    },
+
+    async toggleFollow(targetUserId: string, currentUserId: string): Promise<{ following: boolean; followerCount: number }> {
+        return fetchApi<{ following: boolean; followerCount: number }>(`/users/${targetUserId}/follow`, {
+            method: 'POST',
+            headers: { 'user-id': currentUserId },
+            body: JSON.stringify({ userId: currentUserId }),
+        });
+    },
+
+    async getFollowStatus(targetUserId: string, currentUserId?: string): Promise<{ following: boolean; followerCount: number; followingCount: number }> {
+        const headers: Record<string, string> = {};
+        if (currentUserId) headers['user-id'] = currentUserId;
+        return fetchApi<{ following: boolean; followerCount: number; followingCount: number }>(`/users/${targetUserId}/follow-status`, { headers });
+    },
+
+    async getFeed(userId: string, limit = 20, offset = 0): Promise<{ prompts: UserPrompt[]; total: number; hasMore: boolean }> {
+        return fetchApi<{ prompts: UserPrompt[]; total: number; hasMore: boolean }>(`/users/feed?limit=${limit}&offset=${offset}`, {
+            headers: { 'user-id': userId },
+        });
+    },
+
+    async updatePublicProfile(userId: string, data: { bio?: string; twitterUrl?: string; githubUrl?: string; website?: string }): Promise<any> {
+        return fetchApi<any>(`/users/me/profile`, {
+            method: 'PATCH',
+            headers: { 'user-id': userId },
+            body: JSON.stringify({ ...data, userId }),
         });
     },
 };

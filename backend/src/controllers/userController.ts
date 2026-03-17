@@ -263,3 +263,92 @@ export const getOwnProfile = async (
     }
 };
 
+// ── Follow / Unfollow ───────────────────────────────────────────────────────
+
+export const toggleFollow = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const followerId = (req as any).user?.id;
+        const { id: followingId } = req.params;
+
+        if (!followerId) {
+            res.status(401).json({ status: 'fail', message: 'Authentication required' });
+            return;
+        }
+
+        if (followerId === followingId) {
+            res.status(400).json({ status: 'fail', message: 'Cannot follow yourself' });
+            return;
+        }
+
+        const result = await userService.toggleFollow(followerId, followingId);
+        res.status(200).json({ status: 'success', data: result });
+    } catch (error: any) {
+        next(error);
+    }
+};
+
+export const getFollowStatus = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const currentUserId = (req as any).user?.id;
+        const { id: targetUserId } = req.params;
+        const result = await userService.getFollowStatus(currentUserId, targetUserId);
+        res.status(200).json({ status: 'success', data: result });
+    } catch (error: any) {
+        next(error);
+    }
+};
+
+// ── Feed ───────────────────────────────────────────────────────────────────
+
+export const getFeed = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            res.status(401).json({ status: 'fail', message: 'Authentication required' });
+            return;
+        }
+
+        const limit = req.query.limit ? Math.min(parseInt(req.query.limit as string) || 20, 50) : 20;
+        const offset = req.query.offset ? parseInt(req.query.offset as string) || 0 : 0;
+
+        const feed = await userService.getFeed(userId, limit, offset);
+        res.status(200).json({ status: 'success', data: feed });
+    } catch (error: any) {
+        next(error);
+    }
+};
+
+// ── Update public profile fields ───────────────────────────────────────────
+
+export const updatePublicProfile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            res.status(401).json({ status: 'fail', message: 'Authentication required' });
+            return;
+        }
+
+        const { bio, twitterUrl, githubUrl, website } = req.body;
+        const updated = await userService.updatePublicProfile(userId, { bio, twitterUrl, githubUrl, website });
+        res.status(200).json({ status: 'success', data: updated });
+    } catch (error: any) {
+        next(error);
+    }
+};
+
