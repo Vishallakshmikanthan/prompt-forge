@@ -128,8 +128,8 @@ app.use('/api', (req, res) => {
 // Sentry error handler must be before any other error middleware and after all controllers
 Sentry.setupExpressErrorHandler(app);
 
-// Catch-all route for debugging (Express 5 syntax) - moved after Sentry
-app.all('*', (req, res) => {
+// Catch-all route for debugging (Express 5 syntax requires parens for wildcards in some versions)
+app.all('(.*)', (req, res) => {
     res.status(200).json({
         status: 'debug',
         message: 'Express catch-all reached',
