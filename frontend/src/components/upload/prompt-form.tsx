@@ -83,7 +83,7 @@ export function PromptForm({ onFormChange, initialData }: PromptFormProps) {
             setFieldErrors({});
         }
 
-        if (!result.passed) {
+        if (result.isBlocked) {
             // Scroll to validation panel smoothly
             setTimeout(() => {
                 document.getElementById("validation-panel")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -108,6 +108,7 @@ export function PromptForm({ onFormChange, initialData }: PromptFormProps) {
             tags: formData.tags,
             authorId: user.id,
             parentPromptId: parentPromptId,
+            securityWarnings: result.securityWarnings,
             username: user.user_metadata?.username || user.email, // Fallback to email if no username
             email: user.email,
             avatarUrl: user.user_metadata?.avatar_url

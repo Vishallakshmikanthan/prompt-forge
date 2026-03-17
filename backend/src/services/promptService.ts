@@ -16,6 +16,7 @@ export interface CreatePromptInput {
     embedding?: number[];
     qualityScore?: number;
     moderationStatus?: string;
+    securityWarnings?: string[];
 }
 
 export interface UpdatePromptInput {
@@ -26,6 +27,7 @@ export interface UpdatePromptInput {
     aiModel?: string;
     tags?: string[];
     embedding?: number[];
+    securityWarnings?: string[];
 }
 
 /**
@@ -110,6 +112,7 @@ export const createPrompt = async (data: CreatePromptInput) => {
             embedding: embedding,
             qualityScore: quality.score,
             moderationStatus: moderationStatus,
+            securityWarnings: data.securityWarnings ?? [],
         },
         include: {
             author: {

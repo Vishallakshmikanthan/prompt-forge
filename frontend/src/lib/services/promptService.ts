@@ -17,6 +17,7 @@ export interface Prompt {
     score: number;
     moderationStatus: string;
     qualityScore?: number;
+    securityWarnings: string[];
     createdAt: string;
     authorId: string;
     author: User;
@@ -36,6 +37,7 @@ export interface CreatePromptInput {
     tags: string[];
     authorId: string;
     parentPromptId?: string;
+    securityWarnings?: string[];
     username?: string;
     email?: string;
     avatarUrl?: string;

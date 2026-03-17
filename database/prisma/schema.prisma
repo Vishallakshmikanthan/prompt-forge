@@ -49,6 +49,7 @@ model Prompt {
   score            Int       @default(0)
   moderationStatus String    @default("approved")
   qualityScore     Int?
+  securityWarnings String[]
   createdAt        DateTime  @default(now())
   authorId  String
   author    User            @relation(fields: [authorId], references: [id])

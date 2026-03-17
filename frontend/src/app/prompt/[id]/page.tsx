@@ -185,6 +185,7 @@ export default function PromptPage({ params }: PromptPageProps) {
                             aiModel={prompt.aiModel}
                             tags={prompt.tags}
                             score={prompt.score}
+                            securityWarnings={prompt.securityWarnings}
                             parentPrompt={prompt.parentPrompt}
                         />
                     </div>

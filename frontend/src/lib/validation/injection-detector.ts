@@ -1,6 +1,8 @@
 export interface InjectionDetectionResult {
     passed: boolean;
+    hasErrors: boolean;
     detectedPatterns: string[];
+    warnings: string[];
     message?: string;
 }
 
@@ -27,13 +29,17 @@ export function detectInjection(text: string): InjectionDetectionResult {
         lowerText.includes(pattern.toLowerCase())
     );
 
-    if (detected.length > 0) {
-        return {
-            passed: false,
-            detectedPatterns: detected,
-            message: `Prompt contains potential injection patterns: ${detected.map(p => `"${p}"`).join(", ")}.`
-        };
-    }
-
-    return { passed: true, detectedPatterns: [] };
+    const hasWarnings = detected.length > 0;
+    
+    // For now, treat all injection patterns as warnings that can be bypassed
+    // but should be flagged to the user.
+    return {
+        passed: !hasWarnings,
+        hasErrors: false, // Bypassable
+        detectedPatterns: detected,
+        warnings: detected,
+        message: hasWarnings 
+            ? `Prompt contains potential injection patterns: ${detected.map(p => `"${p}"`).join(", ")}. Use with caution.`
+            : undefined
+    };
 }

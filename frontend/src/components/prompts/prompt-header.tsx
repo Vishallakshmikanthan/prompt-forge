@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
+import { Star, AlertTriangle } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface PromptHeaderProps {
     title: string;
@@ -9,15 +10,27 @@ interface PromptHeaderProps {
     aiModel: string;
     tags: string[];
     score: number;
+    securityWarnings?: string[];
     parentPrompt?: {
         id: string;
         title: string;
     };
 }
 
-export function PromptHeader({ title, author, category, aiModel, tags, score, parentPrompt }: PromptHeaderProps) {
+export function PromptHeader({ title, author, category, aiModel, tags, score, securityWarnings, parentPrompt }: PromptHeaderProps) {
+    const hasWarnings = securityWarnings && securityWarnings.length > 0;
+
     return (
         <div className="flex flex-col gap-4">
+            {hasWarnings && (
+                <div className="flex gap-3 items-center bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 p-4 rounded-xl animate-in fade-in slide-in-from-top-4 duration-700">
+                    <AlertTriangle className="w-5 h-5 shrink-0" />
+                    <div className="text-sm">
+                        <p className="font-bold">Security Notice</p>
+                        <p className="opacity-90">This prompt contains keywords related to: {securityWarnings.map(w => `"${w}"`).join(", ")}. Use it upon your safety.</p>
+                    </div>
+                </div>
+            )}
             {parentPrompt && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground animate-in fade-in slide-in-from-left-2 duration-500">
                     <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />

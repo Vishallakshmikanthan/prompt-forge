@@ -21,38 +21,51 @@ function ScoreBar({ score, max = 25, label }: { score: number; max?: number; lab
 }
 
 export function ValidationResultPanel({ result }: ValidationResultPanelProps) {
-    const { passed, injectionResult, maliciousResult, qualityScore } = result;
+    const { passed, isBlocked, injectionResult, maliciousResult, qualityScore, securityWarnings } = result;
     const score = qualityScore.total;
     const scoreColor = score >= 80 ? "text-green-500" : score >= 60 ? "text-amber-500" : "text-red-500";
     const scoreBg = score >= 80 ? "bg-green-500/10 border-green-500/20" : score >= 60 ? "bg-amber-500/10 border-amber-500/20" : "bg-red-500/10 border-red-500/20";
 
+    const hasWarningsOnly = !passed && !isBlocked && securityWarnings.length > 0;
+    const statusColor = isBlocked ? "text-red-500" : hasWarningsOnly ? "text-amber-500" : "text-green-500";
+    const statusBg = isBlocked ? "bg-red-500/5 border-red-500/20" : hasWarningsOnly ? "bg-amber-500/5 border-amber-500/20" : "bg-green-500/5 border-green-500/20";
+    const StatusIcon = isBlocked ? XCircle : hasWarningsOnly ? AlertTriangle : CheckCircle;
+
     return (
-        <div className={cn("rounded-xl border p-5 space-y-5 transition-all", passed ? "bg-green-500/5 border-green-500/20" : "bg-red-500/5 border-red-500/20")}>
+        <div className={cn("rounded-xl border p-5 space-y-5 transition-all", statusBg)}>
             {/* Overall Status */}
             <div className="flex items-center gap-3">
-                {passed ? (
-                    <CheckCircle className="w-6 h-6 text-green-500 shrink-0" />
-                ) : (
-                    <XCircle className="w-6 h-6 text-red-500 shrink-0" />
-                )}
+                <StatusIcon className={cn("w-6 h-6 shrink-0", statusColor)} />
                 <div>
-                    <p className="font-semibold text-sm">{passed ? "Validation Passed" : "Validation Failed"}</p>
-                    <p className="text-xs text-muted-foreground">{passed ? "Your prompt is ready to publish." : "Please fix the issues below before publishing."}</p>
+                    <p className="font-semibold text-sm">
+                        {isBlocked ? "Validation Failed" : hasWarningsOnly ? "Validation Warning" : "Validation Passed"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                        {isBlocked ? "Please fix the blocking issues below before publishing." : 
+                         hasWarningsOnly ? "Your prompt has security warnings but can be published. Review carefully." : 
+                         "Your prompt is ready to publish."}
+                    </p>
                 </div>
             </div>
 
             {/* Security Checks */}
-            {(!injectionResult.passed || !maliciousResult.passed) && (
+            {(securityWarnings.length > 0 || !injectionResult.passed || !maliciousResult.passed) && (
                 <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Security Issues</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Security Review</p>
                     {!injectionResult.passed && (
-                        <div className="flex gap-2 items-start text-sm text-red-600 dark:text-red-400 bg-red-500/10 rounded-lg p-3">
+                        <div className={cn(
+                            "flex gap-2 items-start text-sm rounded-lg p-3",
+                            injectionResult.hasErrors ? "text-red-600 dark:text-red-400 bg-red-500/10" : "text-amber-600 dark:text-amber-400 bg-amber-500/10"
+                        )}>
                             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                             <span>{injectionResult.message}</span>
                         </div>
                     )}
                     {!maliciousResult.passed && (
-                        <div className="flex gap-2 items-start text-sm text-red-600 dark:text-red-400 bg-red-500/10 rounded-lg p-3">
+                        <div className={cn(
+                            "flex gap-2 items-start text-sm rounded-lg p-3",
+                            maliciousResult.hasErrors ? "text-red-600 dark:text-red-400 bg-red-500/10" : "text-amber-600 dark:text-amber-400 bg-amber-500/10"
+                        )}>
                             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                             <span>{maliciousResult.message}</span>
                         </div>

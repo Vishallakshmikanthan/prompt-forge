@@ -8,7 +8,9 @@ export interface StructureValidationResult {
 }
 
 export interface FullValidationResult {
-    passed: boolean;
+    passed: boolean; // True if NO errors AND NO warnings
+    isBlocked: boolean; // True if there are blocking errors (structure or hard security)
+    securityWarnings: string[];
     structureResult: StructureValidationResult;
     injectionResult: InjectionDetectionResult;
     maliciousResult: MaliciousDetectionResult;
@@ -62,11 +64,22 @@ export function runFullValidation(input: PromptValidationInput): FullValidationR
         input.tags
     );
 
-    const passed =
-        structureResult.passed &&
-        injectionResult.passed &&
-        maliciousResult.passed &&
-        qualityScore.total >= MIN_SCORE;
+    const securityWarnings = [
+        ...injectionResult.warnings,
+        ...maliciousResult.warnings
+    ];
 
-    return { passed, structureResult, injectionResult, maliciousResult, qualityScore };
+    const hasHardSecurityErrors = injectionResult.hasErrors || maliciousResult.hasErrors;
+    const isBlocked = !structureResult.passed || hasHardSecurityErrors || qualityScore.total < MIN_SCORE;
+    const passed = !isBlocked && securityWarnings.length === 0;
+
+    return { 
+        passed, 
+        isBlocked,
+        securityWarnings,
+        structureResult, 
+        injectionResult, 
+        maliciousResult, 
+        qualityScore 
+    };
 }

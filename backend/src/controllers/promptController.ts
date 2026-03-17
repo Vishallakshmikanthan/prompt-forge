@@ -116,6 +116,7 @@ export const createPrompt = async (
             tags,
             authorId,
             parentPromptId,
+            securityWarnings: req.body.securityWarnings,
         });
 
         res.status(201).json({
