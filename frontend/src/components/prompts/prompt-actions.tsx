@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Copy, GitFork, Star, Check, Trash2 } from "lucide-react";
+import { Copy, GitFork, Star, Check, Trash2, Play } from "lucide-react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { bookmarkService } from "@/lib/services/bookmarkService";
 import { promptService } from "@/lib/services/promptService";
@@ -29,9 +29,10 @@ interface PromptActionsProps {
     tags?: string[];
     authorId?: string;
     onDeleted?: () => void;
+    onTryIt?: () => void;
 }
 
-export function PromptActions({ promptId, promptText, title, description, category, aiModel, tags, authorId, onDeleted }: PromptActionsProps) {
+export function PromptActions({ promptId, promptText, title, description, category, aiModel, tags, authorId, onDeleted, onTryIt }: PromptActionsProps) {
     const { user } = useAuth();
     const router = useRouter();
     const [copied, setCopied] = useState(false);
@@ -141,6 +142,16 @@ export function PromptActions({ promptId, promptText, title, description, catego
                 >
                     <GitFork className="w-4 h-4 mr-2" />
                     Fork Variant
+                </Button>
+
+                <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={onTryIt}
+                    className="flex-1 sm:flex-none"
+                >
+                    <Play className="w-4 h-4 mr-2" />
+                    Try it
                 </Button>
 
                 <Button

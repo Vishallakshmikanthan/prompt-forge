@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { PromptPlayground } from "../../../../components/PromptPlayground";
 
 interface PromptPageProps {
     params: Promise<{
@@ -44,6 +45,7 @@ export default function PromptPage({ params }: PromptPageProps) {
     const [versionsLoading, setVersionsLoading] = useState(false);
     const [selectedA, setSelectedA] = useState<string>("");
     const [selectedB, setSelectedB] = useState<string>("");
+    const [playgroundOpen, setPlaygroundOpen] = useState(false);
     const [isRestoring, setIsRestoring] = useState<string | null>(null);
 
     useEffect(() => {
@@ -200,6 +202,7 @@ export default function PromptPage({ params }: PromptPageProps) {
                             tags={prompt.tags}
                             authorId={prompt.authorId}
                             onDeleted={() => router.push("/categories")}
+                            onTryIt={() => setPlaygroundOpen(true)}
                         />
                     </div>
                 </div>
@@ -315,6 +318,14 @@ export default function PromptPage({ params }: PromptPageProps) {
                     </TabsContent>
                 </Tabs>
             </div>
+
+            {/* Prompt Playground */}
+            <PromptPlayground
+                open={playgroundOpen}
+                onOpenChange={setPlaygroundOpen}
+                promptContent={prompt.promptContent}
+                promptTitle={prompt.title}
+            />
 
             {/* Recommended Prompts Section */}
             {recommendedPrompts.length > 0 && (

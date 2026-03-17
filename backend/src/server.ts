@@ -18,6 +18,7 @@ import statsRoutes from './routes/statsRoutes';
 import profileRoutes from './routes/profileRoutes';
 import authRoutes from './routes/authRoutes';
 import commentsRoutes from './routes/comments';
+import playgroundRoutes from './routes/playground';
 import securityHeaders from './middleware/securityHeaders';
 import { apiRateLimiter } from './middleware/rateLimiter';
 import errorHandler from './middleware/errorHandler';
@@ -114,6 +115,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api/discussions', discussionRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/playground', playgroundRoutes);
 app.use('/api', commentsRoutes);
 
 // 404 Handler for missing API routes (must be after all other /api routes)
