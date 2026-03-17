@@ -128,8 +128,8 @@ app.use('/api', (req, res) => {
 // Sentry error handler must be before any other error middleware and after all controllers
 Sentry.setupExpressErrorHandler(app);
 
-// Catch-all route for debugging (Express 5 syntax)
-app.all('{*path}', (req, res) => {
+// Catch-all route for debugging (Express 5 syntax) - moved after Sentry
+app.all('*', (req, res) => {
     res.status(200).json({
         status: 'debug',
         message: 'Express catch-all reached',
@@ -142,10 +142,11 @@ app.all('{*path}', (req, res) => {
 app.use(errorHandler);
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
-const HOST = '0.0.0.0';
-const server = app.listen(Number(PORT), HOST, async () => {
+const server = app.listen(PORT, () => {
+    const addr = server.address();
+    const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr?.port}`;
     console.log(`🚀 PromptForge API is starting...`);
-    console.log(`📡 URL: http://${HOST}:${PORT}`);
+    console.log(`📡 Server listening on ${bind}`);
     console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🔑 SENTRY_DSN: ${process.env.SENTRY_DSN ? 'Configured' : 'Missing'}`);
     console.log(`🔗 FRONTEND_URL: ${process.env.FRONTEND_URL || 'Not Set'}`);
