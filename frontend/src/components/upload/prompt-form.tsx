@@ -88,6 +88,7 @@ export function PromptForm({ onFormChange, initialData }: PromptFormProps) {
             setTimeout(() => {
                 document.getElementById("validation-panel")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
             }, 100);
+            setIsSubmitting(false);
             return;
         }
 

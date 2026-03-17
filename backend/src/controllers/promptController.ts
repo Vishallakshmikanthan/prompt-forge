@@ -2,6 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import * as promptService from '../services/promptService';
 import * as userService from '../services/userService';
 import { AppError } from '../middleware/errorHandler';
+import { pingIndexNow } from '../utils/indexNow';
+
+// In-memory store for duplicate submission detection: "userId:title:content" -> timestamp (ms)
+const recentSubmissions = new Map<string, number>();
+const DUPLICATE_WINDOW_MS = 5000; // 5 seconds
 
 /**
  * GET /api/prompts
@@ -76,6 +81,22 @@ export const createPrompt = async (
             return next(err);
         }
 
+        // Duplicate submission guard: reject identical content from same user within 5 seconds
+        const submissionKey = `${authorId}:${title}:${promptContent}`;
+        const lastSubmitted = recentSubmissions.get(submissionKey);
+        if (lastSubmitted && Date.now() - lastSubmitted < DUPLICATE_WINDOW_MS) {
+            const err: AppError = new Error('Duplicate submission detected. Please wait a moment before resubmitting.');
+            err.statusCode = 409;
+            return next(err);
+        }
+        recentSubmissions.set(submissionKey, Date.now());
+        // Evict stale entries to prevent unbounded memory growth
+        for (const [key, ts] of recentSubmissions.entries()) {
+            if (Date.now() - ts >= DUPLICATE_WINDOW_MS) {
+                recentSubmissions.delete(key);
+            }
+        }
+
         // Sync user to local database if they don't exist
         if (username && email) {
             await userService.upsertUser({
@@ -101,6 +122,9 @@ export const createPrompt = async (
             status: 'success',
             data: newPrompt,
         });
+
+        // Ping IndexNow fire-and-forget
+        pingIndexNow([`https://prompt-forge-two-indol.vercel.app/prompts/${newPrompt.id}`]);
     } catch (err) {
         next(err as AppError);
     }
@@ -167,6 +191,39 @@ export const updatePrompt = async (
     } catch (err: any) {
         if (err.message === 'Prompt not found') {
             err.statusCode = 404;
+        }
+        next(err as AppError);
+    }
+};
+
+/**
+ * DELETE /api/prompts/:promptId
+ * Deletes a prompt. Only the original author may delete their own prompt.
+ */
+export const deletePrompt = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const promptId = req.params['promptId'] as string;
+        const requestingUserId = (req as any).user?.id;
+
+        if (!requestingUserId) {
+            const err: AppError = new Error('Authentication required');
+            err.statusCode = 401;
+            return next(err);
+        }
+
+        await promptService.deletePrompt(promptId, requestingUserId);
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Prompt deleted successfully',
+        });
+    } catch (err: any) {
+        if (err.statusCode) {
+            return next(err as AppError);
         }
         next(err as AppError);
     }

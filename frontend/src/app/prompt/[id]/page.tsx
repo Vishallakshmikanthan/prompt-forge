@@ -5,15 +5,23 @@ import { type Prompt } from "@/lib/services/promptService";
 import { promptService } from "@/lib/services/promptService";
 import { analyticsService, type PromptAnalytics } from "@/lib/services/analyticsService";
 import { recommendationService } from "@/lib/services/recommendationService";
+import { versionService, type PromptVersion } from "@/lib/services/versionService";
 import { PromptHeader } from "@/components/prompts/prompt-header";
 import { PromptActions } from "@/components/prompts/prompt-actions";
 import { PromptContent } from "@/components/prompts/prompt-content";
 import { PromptMetadata } from "@/components/prompts/prompt-metadata";
 import { VersionHistory } from "@/components/prompts/version-history";
+import { PromptDiffViewer } from "@/components/prompts/prompt-diff-viewer";
 import { CategoryPromptGrid } from "@/components/feed/category-prompt-grid";
-import { ArrowLeft } from "lucide-react";
+import CommentSection from "@/components/CommentSection";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ArrowLeft, GitCompare, History } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/auth/auth-provider";
+import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface PromptPageProps {
     params: Promise<{
@@ -23,11 +31,20 @@ interface PromptPageProps {
 
 export default function PromptPage({ params }: PromptPageProps) {
     const resolvedParams = use(params);
+    const { user } = useAuth();
     const [prompt, setPrompt] = useState<Prompt | null>(null);
     const [analytics, setAnalytics] = useState<PromptAnalytics | null>(null);
     const [recommendedPrompts, setRecommendedPrompts] = useState<Prompt[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
+
+    // History tab state
+    const [versions, setVersions] = useState<PromptVersion[]>([]);
+    const [versionsLoading, setVersionsLoading] = useState(false);
+    const [selectedA, setSelectedA] = useState<string>("");
+    const [selectedB, setSelectedB] = useState<string>("");
+    const [isRestoring, setIsRestoring] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchPromptData = async () => {
@@ -65,6 +82,51 @@ export default function PromptPage({ params }: PromptPageProps) {
 
         fetchPromptData();
     }, [resolvedParams.id]);
+
+    const handleTabChange = async (value: string) => {
+        if (value === "history" && versions.length === 0 && !versionsLoading && prompt) {
+            setVersionsLoading(true);
+            try {
+                const data = await versionService.getPromptVersions(prompt.id);
+                setVersions(data);
+                if (data.length >= 2) {
+                    setSelectedA(data[data.length - 1].id); // oldest
+                    setSelectedB(data[0].id);               // newest
+                }
+            } catch (err) {
+                console.error("Failed to load version history:", err);
+            } finally {
+                setVersionsLoading(false);
+            }
+        }
+    };
+
+    const handleRestore = async (versionId: string) => {
+        if (!user || !prompt) return;
+        setIsRestoring(versionId);
+        try {
+            await versionService.restoreVersion(prompt.id, versionId, user.id);
+            toast.success("Prompt restored to selected version");
+            // Refresh prompt content and version list
+            const [updatedPrompt, updatedVersions] = await Promise.all([
+                promptService.getPromptById(prompt.id),
+                versionService.getPromptVersions(prompt.id),
+            ]);
+            setPrompt(updatedPrompt);
+            setVersions(updatedVersions);
+            if (updatedVersions.length >= 2) {
+                setSelectedA(updatedVersions[updatedVersions.length - 1].id);
+                setSelectedB(updatedVersions[0].id);
+            }
+        } catch (err: any) {
+            toast.error(err.message || "Failed to restore version");
+        } finally {
+            setIsRestoring(null);
+        }
+    };
+
+    const diffVersionA = versions.find((v) => v.id === selectedA) ?? null;
+    const diffVersionB = versions.find((v) => v.id === selectedB) ?? null;
 
     if (isLoading) {
         return (
@@ -113,7 +175,7 @@ export default function PromptPage({ params }: PromptPageProps) {
             </div>
 
             {/* Top Section: Header & Actions */}
-            <div className="container mx-auto px-4 max-w-5xl mb-12">
+            <div className="container mx-auto px-4 max-w-5xl mb-8">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-8 pb-8 border-b">
                     <div className="flex-1">
                         <PromptHeader
@@ -135,43 +197,122 @@ export default function PromptPage({ params }: PromptPageProps) {
                             category={prompt.category}
                             aiModel={prompt.aiModel}
                             tags={prompt.tags}
+                            authorId={prompt.authorId}
+                            onDeleted={() => router.push("/categories")}
                         />
                     </div>
                 </div>
 
-                {/* Main Content & Metadata Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                    {/* Left Column: Prompt Content */}
-                    <div className="lg:col-span-3 space-y-8">
-                        <div className="space-y-4">
-                            <h2 className="text-xl font-semibold">Description</h2>
-                            <p className="text-muted-foreground leading-relaxed">
-                                {prompt.description}
-                            </p>
-                        </div>
+                {/* Tabbed content: Overview and History */}
+                <Tabs defaultValue="overview" onValueChange={handleTabChange}>
+                    <TabsList className="mb-8">
+                        <TabsTrigger value="overview">Overview</TabsTrigger>
+                        <TabsTrigger value="history">
+                            <History className="w-3.5 h-3.5 mr-1.5" />
+                            History
+                        </TabsTrigger>
+                    </TabsList>
 
-                        <PromptContent content={prompt.promptContent} />
-                    </div>
+                    {/* ── Overview Tab ── */}
+                    <TabsContent value="overview">
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                            {/* Left Column: Prompt Content */}
+                            <div className="lg:col-span-3 space-y-8">
+                                <div className="space-y-4">
+                                    <h2 className="text-xl font-semibold">Description</h2>
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        {prompt.description}
+                                    </p>
+                                </div>
 
-                    {/* Right Column: Metadata & History */}
-                    <div className="lg:col-span-2 space-y-8">
-                        <div>
-                            <h3 className="text-lg font-semibold mb-4">Prompt Details</h3>
-                            <PromptMetadata
-                                author={prompt.author?.username || "Unknown"}
-                                createdAt={prompt.createdAt}
-                                views={analytics?.views}
-                                votes={analytics?.votes}
-                                forks={analytics?.forks}
-                                bookmarks={analytics?.bookmarks}
-                            />
-                        </div>
+                                <PromptContent content={prompt.promptContent} />
 
-                        <div>
-                            <VersionHistory promptId={prompt.id} />
+                                <CommentSection promptId={prompt.id} />
+                            </div>
+
+                            {/* Right Column: Metadata & History */}
+                            <div className="lg:col-span-2 space-y-8">
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-4">Prompt Details</h3>
+                                    <PromptMetadata
+                                        author={prompt.author?.username || "Unknown"}
+                                        createdAt={prompt.createdAt}
+                                        views={analytics?.views}
+                                        votes={analytics?.votes}
+                                        forks={analytics?.forks}
+                                        bookmarks={analytics?.bookmarks}
+                                    />
+                                </div>
+
+                                <div>
+                                    <VersionHistory promptId={prompt.id} />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </TabsContent>
+
+                    {/* ── History Tab ── */}
+                    <TabsContent value="history">
+                        {versionsLoading ? (
+                            <div className="flex items-center justify-center py-16">
+                                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                            </div>
+                        ) : versions.length === 0 ? (
+                            <div className="py-16 text-center text-muted-foreground">
+                                No version history available for this prompt.
+                            </div>
+                        ) : (
+                            <div className="space-y-8">
+                                {/* Version selectors */}
+                                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                                    <div className="flex items-center gap-2 flex-1">
+                                        <GitCompare className="w-4 h-4 text-muted-foreground shrink-0" />
+                                        <label className="text-sm font-medium whitespace-nowrap">Compare:</label>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full">
+                                        <select
+                                            value={selectedA}
+                                            onChange={(e) => setSelectedA(e.target.value)}
+                                            className="flex-1 rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                                        >
+                                            {versions.map((v) => (
+                                                <option key={v.id} value={v.id}>
+                                                    V{v.versionNumber} — {format(new Date(v.createdAt), "MMM d, yyyy · HH:mm")} — {v.promptContent.slice(0, 60)}{v.promptContent.length > 60 ? "…" : ""}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <span className="hidden sm:flex items-center text-muted-foreground text-sm">vs</span>
+                                        <select
+                                            value={selectedB}
+                                            onChange={(e) => setSelectedB(e.target.value)}
+                                            className="flex-1 rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                                        >
+                                            {versions.map((v) => (
+                                                <option key={v.id} value={v.id}>
+                                                    V{v.versionNumber} — {format(new Date(v.createdAt), "MMM d, yyyy · HH:mm")} — {v.promptContent.slice(0, 60)}{v.promptContent.length > 60 ? "…" : ""}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Diff viewer */}
+                                {diffVersionA && diffVersionB && diffVersionA.id !== diffVersionB.id ? (
+                                    <PromptDiffViewer
+                                        versionA={diffVersionA}
+                                        versionB={diffVersionB}
+                                        onRestore={user && prompt.authorId === user.id ? handleRestore : undefined}
+                                        isRestoring={isRestoring}
+                                    />
+                                ) : (
+                                    <p className="text-sm text-muted-foreground text-center py-8">
+                                        Select two different versions above to compare them.
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </TabsContent>
+                </Tabs>
             </div>
 
             {/* Recommended Prompts Section */}

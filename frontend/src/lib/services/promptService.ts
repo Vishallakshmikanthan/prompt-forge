@@ -84,4 +84,15 @@ export const promptService = {
             body: JSON.stringify({ userId, voteType: "upvote" }),
         });
     },
+
+    /**
+     * Delete a prompt owned by the current user.
+     * Endpoint: DELETE /prompts/:promptId
+     */
+    async deletePrompt(promptId: string, userId: string): Promise<void> {
+        return fetchApi<void>(`/prompts/${promptId}`, {
+            method: "DELETE",
+            headers: { "user-id": userId },
+        });
+    },
 };

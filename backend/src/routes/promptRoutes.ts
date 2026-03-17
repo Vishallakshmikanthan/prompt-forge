@@ -5,6 +5,7 @@ import {
     createPrompt,
     votePrompt,
     updatePrompt,
+    deletePrompt,
 } from '../controllers/promptController';
 import { authenticate } from '../middleware/authMiddleware';
 import { promptValidation } from '../middleware/validation';
@@ -26,5 +27,8 @@ router.post('/:id/vote', sensitiveRouteRateLimiter, authenticate, votePrompt);
 
 // PATCH /api/prompts/:id
 router.patch('/:id', authenticate, promptValidation, updatePrompt);
+
+// DELETE /api/prompts/:promptId
+router.delete('/:promptId', authenticate, deletePrompt);
 
 export default router;

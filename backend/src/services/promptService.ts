@@ -184,6 +184,38 @@ export const votePrompt = async (promptId: string, userId: string, voteType: 'up
 };
 
 /**
+ * Delete a prompt owned by the requesting user.
+ * Nullifies parentPromptId on child forks before deletion so FK constraints are not violated
+ * (the self-referential PromptLineage relation has no cascade). All other related records
+ * (PromptAnalytics, PromptVersion, Vote, Bookmark, PromptFork) carry onDelete: Cascade.
+ */
+export const deletePrompt = async (promptId: string, requestingUserId: string) => {
+    return prisma.$transaction(async (tx: any) => {
+        const prompt = await tx.prompt.findUnique({ where: { id: promptId } });
+
+        if (!prompt) {
+            const err: any = new Error('Prompt not found');
+            err.statusCode = 404;
+            throw err;
+        }
+
+        if (prompt.authorId !== requestingUserId) {
+            const err: any = new Error('You are not authorized to delete this prompt');
+            err.statusCode = 403;
+            throw err;
+        }
+
+        // Nullify parentPromptId on any forks so the self-referential FK does not block deletion
+        await tx.prompt.updateMany({
+            where: { parentPromptId: promptId },
+            data: { parentPromptId: null },
+        });
+
+        await tx.prompt.delete({ where: { id: promptId } });
+    });
+};
+
+/**
  * Update a prompt and automatically record a version of the PREVIOUS content.
  */
 export const updatePrompt = async (id: string, data: UpdatePromptInput) => {
