@@ -24,6 +24,7 @@ export function PromptPreview({ promptData }: PromptPreviewProps) {
         },
         score: 0,
         moderationStatus: "approved",
+        securityWarnings: [],
         createdAt: new Date().toISOString()
     };
 
